@@ -27,9 +27,26 @@ JOIN players ON players.ID = matchplayers.playerID GROUP BY matchplayers.matchID
 
 function getMatchByID(ID, callback){
   var db = openDatabase();
-  db.get(`SELECT matches.ID, matches.type, matches.datetime, matchplayers.playerID, matchplayers.setsWon
-            FROM matches JOIN matchplayers ON matches.ID=matchplayers.matchID where matches.ID = $value`, {$value: ID},
-    function(err, row) { db.close(); callback(err, row); }
+  db.get(`select matches.ID, matches.type, group_concat(players.name || ":" || matchplayers.setsWon) as scores from matches JOIN matchplayers on matches.ID = matchplayers.matchID
+JOIN players ON players.ID = matchplayers.playerID where matches.ID = ?;`, ID,
+    function(err, match) {
+      if(match == null || match.ID == null)
+      {
+        callback(err, null);
+        return;
+      }
+      db.close();
+      
+      var rawScores = match.scores.split(",");
+      var scores = [];
+      rawScores.forEach(function(player) {
+        var rawInfo = player.split(":");
+        scores.push( { name: rawInfo[0], setsWon: rawInfo[1] } );
+      });
+      match.scores = scores;
+      
+      callback(err, match);
+    }
   );
 }
 
