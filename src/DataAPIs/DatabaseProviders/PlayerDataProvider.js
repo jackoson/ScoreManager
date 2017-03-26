@@ -1,9 +1,6 @@
 "use strict"
-var sqlite3 = require("sqlite3");
 
-function openDatabase() {
-  return new sqlite3.Database('../tennis.db');
-}
+var openDatabase = require("./DatabaseConnector").openDatabase;
 
 function getAllPlayers(callback) {
   var db = openDatabase();

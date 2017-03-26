@@ -1,7 +1,8 @@
 "use strict"
-var express = require('express')
-var router = express.Router()
-var matchesController = require('./databaseController').matches
+var express = require('express');
+var router = express.Router();
+var dbController = require('./DatabaseProviders/DataProviderController');
+var competitionController = dbController.matches;
 
 router.get('/', function (req, res) {
   matchesController.getAllMatches(function(err,data){ res.send(data); })

@@ -1,27 +1,11 @@
 "use strict"
-var sqlite3 = require("sqlite3");
 
-function openDatabase() {
-  return new sqlite3.Database('../tennis.db');
-}
+var openDatabase = require("./DatabaseConnector").openDatabase;
 
-function getAllMatches(callback) {
+function getAllCompetitions(callback) {
   var db = openDatabase();
-  db.all(`select matches.ID, matches.type, group_concat(players.name || ":" || matchplayers.setsWon) as scores from matches JOIN matchplayers on matches.ID = matchplayers.matchID
-JOIN players ON players.ID = matchplayers.playerID GROUP BY matchplayers.matchID;`,
-    function(err, matches) {
-      db.close();
-      matches.forEach(function(match) {
-        var rawScores = match.scores.split(",");
-        var scores = [];
-        rawScores.forEach(function(player) {
-          var rawInfo = player.split(":");
-          scores.push( { name: rawInfo[0], setsWon: rawInfo[1] } );
-        });
-        match.scores = scores;
-      });
-      callback(err, matches);
-    }
+  db.all('SELECT * FROM competitions',
+    function(err, rows) { db.close(); callback(err, rows); }
   );
 }
 
@@ -87,7 +71,7 @@ function deleteMatch(ID, callback) {
 }
 
 module.exports = {
-  getAllMatches : getAllMatches,
+  getAllCompetitions : getAllCompetitions,
   getMatchByID : getMatchByID,
   addMatch : addMatch,
   deleteMatch : deleteMatch
