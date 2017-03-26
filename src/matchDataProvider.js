@@ -7,9 +7,21 @@ function openDatabase() {
 
 function getAllMatches(callback) {
   var db = openDatabase();
-  db.all(`SELECT matches.ID, matches.type, matches.datetime, matchplayers.playerID, matchplayers.setsWon
-            FROM matches JOIN matchplayers ON matches.ID=matchplayers.matchID`,
-    function(err, rows) { db.close(); callback(err, rows); }
+  db.all(`select matches.ID, matches.type, group_concat(players.name || ":" || matchplayers.setsWon) as scores from matches JOIN matchplayers on matches.ID = matchplayers.matchID
+JOIN players ON players.ID = matchplayers.playerID GROUP BY matchplayers.matchID;`,
+    function(err, matches) {
+      db.close();
+      matches.forEach(function(match) {
+        var rawScores = match.scores.split(",");
+        var scores = [];
+        rawScores.forEach(function(player) {
+          var rawInfo = player.split(":");
+          scores.push( { name: rawInfo[0], setsWon: rawInfo[1] } );
+        });
+        match.scores = scores;
+      });
+      callback(err, matches);
+    }
   );
 }
 

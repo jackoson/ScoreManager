@@ -21,6 +21,8 @@ router.get('/sex/:sex', function (req, res) {
 })
 
 router.get('/add', function (req, res) {
+  if (req.params.name.contains(":"))
+    res.err("The symbol ':' is not allowed in names.");
   playerController.addPlayer(req.query.name, req.query.sex, function(err){ if (err == null) {res.send("success");} else {res.send("fail");}; })
 })
 
