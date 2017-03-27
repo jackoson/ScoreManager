@@ -1,8 +1,8 @@
 "use strict";
 
-var playerAPI = require("./playerAPI");
-var matchAPI = require("./matchAPI");
-var competitionAPI = require("./competitionAPI");
+var playerAPI = require("./PlayerAPI");
+var matchAPI = require("./MatchAPI");
+var competitionAPI = require("./CompetitionAPI");
 
 module.exports = {
   players : playerAPI,
