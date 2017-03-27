@@ -9,70 +9,38 @@ function getAllCompetitions(callback) {
   );
 }
 
-function getMatchByID(ID, callback){
+function getCompetitionByID(ID, callback){
   var db = openDatabase();
-  db.get(`select matches.ID, matches.type, group_concat(players.name || ":" || matchplayers.setsWon) as scores from matches JOIN matchplayers on matches.ID = matchplayers.matchID
-JOIN players ON players.ID = matchplayers.playerID where matches.ID = ?;`, ID,
-    function(err, match) {
-      if(match == null || match.ID == null)
-      {
-        callback(err, null);
-        return;
-      }
-      db.close();
-      
-      var rawScores = match.scores.split(",");
-      var scores = [];
-      rawScores.forEach(function(player) {
-        var rawInfo = player.split(":");
-        scores.push( { name: rawInfo[0], setsWon: rawInfo[1] } );
-      });
-      match.scores = scores;
-      
-      callback(err, match);
-    }
+  db.get('SELECT * FROM competitions where ID = $value', {$value: ID},
+    function(err, row) { db.close(); callback(err, row); }
   );
 }
 
-function addMatch(players, type, datetime, callback) {
-  if (players.length < 2) { callback("ERROR: Must have at least 2 player for a match"); }
+function getCompetitionsByName(name, callback) {
   var db = openDatabase();
-  var matchID;
-  function addNextPlayer(err) {
-    if(err != null || players.length == 0) {
-      db.close();
-      callback(err);
-    }
-    else {
-      var player = players.pop();
-      db.run('insert into matchplayers (matchID, playerID, setsWon) values ($matchID, $playerID, $setsWon)',
-        {$matchID: matchID, $playerID: player.id, $setsWon: player.setsWon},addNextPlayer);
-    }
-  }
-  db.run('insert into matches (type, datetime) values ($type, $datetime)', {$type: type, $datetime: datetime},
-    function(err){
-      matchID = this.lastID;
-      addNextPlayer(err);
-    });
+  db.all('SELECT * FROM competitions where name like \'%' + name + '%\'',
+    function(err, rows) { db.close(); callback(err, rows); }
+  );
 }
 
-function deleteMatch(ID, callback) {
+function addCompetition(name, type, callback) {
   var db = openDatabase();
-  db.run('delete from matches where ID = $id', {$id: ID},
-    function(err) {
-      if(err != null) {
-        db.close();
-        callback(err);
-      }
-      else {
-        db.run('delete from matchplayers where matchID = $id', {$id: ID}, function(err) { db.close(); callback(err); } );
-      }
-  } );
+  db.run('insert into competitions (name, type) values ($name, $type)', {$name: name, $type: type},
+    function(err) { db.close(); callback(err); }
+  );
+}
+
+function deleteCompetition(ID, callback) {
+  var db = openDatabase();
+  db.run('delete from players where ID = $id', {$id: ID}, 
+    function(err) { db.close(); callback(err); }
+  );
 }
 
 module.exports = {
   getAllCompetitions : getAllCompetitions,
-  getMatchByID : getMatchByID,
-  addMatch : addMatch,
-  deleteMatch : deleteMatch
+  getCompetitionByID : getCompetitionByID,
+  getCompetitionsByName : getCompetitionsByName,
+  addCompetition : addCompetition,
+  deleteCompetition : deleteCompetition
 }

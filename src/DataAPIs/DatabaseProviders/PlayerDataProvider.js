@@ -37,12 +37,16 @@ function addPlayer(name, sex, callback) {
   if (name == null || sex == null) { callback("ERROR: Need both name and gender to add player."); }
   if (!(sex == male || sex == female || sex == other)) {callback("ERROR: Not valid sex."); }
   var db = openDatabase();
-  db.run('insert into players (name, sex) values ($name, $sex)', {$name: name, $sex: sex}, callback );
+  db.run('insert into players (name, sex) values ($name, $sex)', {$name: name, $sex: sex}, 
+    function(err) { db.close(); callback(err); }
+  );
 }
 
 function deletePlayer(ID, callback) {
   var db = openDatabase();
-  db.run('delete from players where ID = $id', {$id: ID}, callback );
+  db.run('delete from players where ID = $id', {$id: ID}, 
+    function(err) { db.close(); callback(err); }
+  );
 }
 
 module.exports = {
