@@ -12,6 +12,7 @@ app.use(express.static("public"));
 app.use('/players', APIs.players);
 app.use('/matches', APIs.matches);
 app.use('/competitions', APIs.competitions);
+app.use('/teams', APIs.teams);
 
 var port = 8080;
 var address = "localhost"

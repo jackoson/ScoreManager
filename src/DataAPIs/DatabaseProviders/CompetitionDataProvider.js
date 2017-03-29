@@ -26,7 +26,7 @@ function getCompetitionsByName(name, callback) {
 function addCompetition(name, type, callback) {
   var db = openDatabase();
   db.run('insert into competitions (name, type) values ($name, $type)', {$name: name, $type: type},
-    function(err) { db.close(); callback(err); }
+    function(err) { db.close(); callback(err, this.lastID); }
   );
 }
 
@@ -38,9 +38,9 @@ function deleteCompetition(ID, callback) {
 }
 
 module.exports = {
-  getAllCompetitions : getAllCompetitions,
-  getCompetitionByID : getCompetitionByID,
-  getCompetitionsByName : getCompetitionsByName,
-  addCompetition : addCompetition,
-  deleteCompetition : deleteCompetition
+  getAll : getAllCompetitions,
+  getByID : getCompetitionByID,
+  getByName : getCompetitionsByName,
+  add : addCompetition,
+  deleteByID : deleteCompetition
 }

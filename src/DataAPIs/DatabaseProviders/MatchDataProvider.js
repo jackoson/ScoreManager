@@ -54,7 +54,7 @@ function addMatch(players, type, datetime, callback) {
   function addNextPlayer(err) {
     if(err != null || players.length == 0) {
       db.close();
-      callback(err);
+      callback(err, matchID);
     }
     else {
       var player = players.pop();
@@ -83,9 +83,23 @@ function deleteMatch(ID, callback) {
   } );
 }
 
+function deleteAllMatches(callback) {
+  var db = openDatabase();
+  db.run('delete from matches', 
+    function(err) {
+      db.run('delete from matchplayers',
+        function() {
+          db.close(); callback(err);
+        }
+      );
+    }
+  );
+}
+
 module.exports = {
-  getAllMatches : getAllMatches,
-  getMatchByID : getMatchByID,
-  addMatch : addMatch,
-  deleteMatch : deleteMatch
+  getAll : getAllMatches,
+  getByID : getMatchByID,
+  add : addMatch,
+  deleteByID : deleteMatch,
+  deleteAll : deleteAllMatches
 }

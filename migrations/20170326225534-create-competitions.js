@@ -15,19 +15,20 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-  return db.createTable('competitions', {
+  return db.createTable('competitions',
+    {
       ID : { type: 'int', notNull: true, primaryKey: true },
       name : { type: 'string', length: 50 },
       type : { type: 'string', length: 30 }
     },
-      function() {
-        db.addColumn('matches', 'competitionID', { type: 'int' }, callback);
-      }
+    function() {
+      db.addColumn('matches', 'competitionID', { type: 'int' }, callback);
+    }
     );
 };
 
-exports.down = function(db) {
-  return db.dropTable('competitions').removeColumn('matches', 'competitionID');
+exports.down = function(db, callback) {
+  return db.dropTable('competitions', callback);
 };
 
 exports._meta = {

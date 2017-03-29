@@ -38,7 +38,7 @@ function addPlayer(name, sex, callback) {
   if (!(sex == male || sex == female || sex == other)) {callback("ERROR: Not valid sex."); }
   var db = openDatabase();
   db.run('insert into players (name, sex) values ($name, $sex)', {$name: name, $sex: sex}, 
-    function(err) { db.close(); callback(err); }
+    function(err) { db.close(); callback(err, this.lastID); }
   );
 }
 
@@ -49,14 +49,23 @@ function deletePlayer(ID, callback) {
   );
 }
 
+function deleteAllPlayers(callback) {
+  var db = openDatabase();
+  db.run('delete from players', 
+    function(err) { db.close(); callback(err); }
+  );
+}
+
+
 module.exports = {
-  getAllPlayers : getAllPlayers,
-  getPlayerByID : getPlayerByID,
-  getPlayersByName : getPlayersByName,
-  getPlayersBySex : getPlayersBySex,
+  getAll : getAllPlayers,
+  getByID : getPlayerByID,
+  getByName : getPlayersByName,
+  getBySex : getPlayersBySex,
   female : female,
   male : male,
   other : other,
-  addPlayer : addPlayer,
-  deletePlayer : deletePlayer
+  add : addPlayer,
+  deleteByID : deletePlayer,
+  deleteAll : deleteAllPlayers
 }

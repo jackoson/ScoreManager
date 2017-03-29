@@ -15,22 +15,14 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-  db.createTable('matchplayers', {
+  db.createTable('matchplayers',
+    {
       ID : { type: 'int', notNull: true, primaryKey: true },
       matchID : { type: 'int', notNull: true },
       playerID : { type: 'int', notNull: true },
       setsWon : { type: 'int' }
     },
-    function() {
-      db.insert('matchplayers', ["matchID", "playerID", "setsWon"], [1, 1, 2],
-        function() {
-          db.insert('matchplayers', ["matchID", "playerID", "setsWon"], [1, 4, 1],
-          function() {
-            db.insert('matchplayers', ["matchID", "playerID", "setsWon"], [2, 5, 1], callback);
-          });
-        }
-      );
-    }
+    callback
   );
 };
 

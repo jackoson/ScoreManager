@@ -15,18 +15,13 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-  db.createTable('matches', {
+  db.createTable('matches',
+    {
       ID : { type: 'int', notNull: true, primaryKey: true },
       type : { type: 'string', length: 30 },
       datetime : { type: 'datetime' }
     },
-    function() {
-      db.insert('matches', ["type", "datetime"], ["mens singles", '2017-03-16 12:56:00'],
-        function() {
-          db.insert('matches', ["type", "datetime"], ["mixed doubles", '2017-03-17 09:00:00'], callback);
-        }
-      );
-    }
+    callback
   );
 };
 

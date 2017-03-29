@@ -15,18 +15,13 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-  db.createTable('players', {
+  db.createTable('players',
+    {
       ID : { type: 'int', notNull: true, primaryKey: true },
       name : { type: 'string', length: 50 },
       sex : { type: 'char', length: 1 }
     },
-    function() {
-      db.insert('players', ["name", "sex"], ["sam", 'm'],
-        function() {
-          db.insert('players', ["name", "sex"], ["georgina", 'f'], callback);
-        }
-      );
-    }
+    callback
   );
 };
 
