@@ -4,44 +4,60 @@ var openDatabase = require("./DatabaseConnector").openDatabase;
 
 function getAllMatches(callback) {
   var db = openDatabase();
-  db.all('select ID, type, datetime, rubberID from matches', getMatches);
+  db.all('select ID, datetime, type from matches', getMatches);
   function getMatches(err, matches_basic) {
     if(err != null) { callback(err); return; }
     if(matches_basic.length == 0) { callback(err, []); return; }
     var matches_with_opponents = [];
-    while(matches_basic.length > 1) {
-      populateMatch(false);
-    }
-    populateMatch(true);
-    function populateMatch(lastmatch) {
-      var match = matches_basic.pop();
-      db.all('select ID, setsWon from opponents where opponents.matchID = $ID', {$ID: match.ID}, _populateMatch);
-      function _populateMatch(err, opponents_basic) {
-        if(err != null) { callback(err); return; }
-        if(opponents_basic.length == 0) { callback("ERROR: No opponents for match."); return; }
-        var opponents_with_players = [];
-        while(opponents_basic.length > 1) {
-          populateOpponent(false);
+    var next_match = matches_basic.pop();
+    if(matches_basic.length > 0)
+      db.all('select opponents.ID, opponents.setsWon from opponents where opponents.matchID = $ID', {$ID: next_match.ID},
+        function(err, opponents) { getOpponents(err, opponents, next_match, false); });
+    else
+      db.all('select opponents.ID, opponents.setsWon from opponents where opponents.matchID = $ID', {$ID: next_match.ID},
+        function(err, opponents) { getOpponents(err, opponents, next_match, true); });
+
+    function getOpponents(err, opponents_basic, match, lastMatch) {
+      if(err != null) { console.log("couldn't get match"); callback(err); return; }
+      if(opponents_basic.length != 2) { callback("ERROR: match with "+opponents_basic.length+" opponents."); return; }
+      var opponents_with_players = [];
+
+      var next_opponent = opponents_basic.pop();
+      if(opponents_basic.length > 0)
+        db.all('select ID, playerID from matchplayers where opponentID = $ID', {$ID: next_opponent.ID},
+          function(err, players) { getPlayers(err, players, next_opponent, false); });
+      else
+        db.all('select ID, playerID from matchplayers where opponentID = $ID', {$ID: next_opponent.ID},
+          function(err, players) { getPlayers(err, players, next_opponent, true); });
+
+      function getPlayers(err, players, opponent, lastOpponent) {
+        if(err != null) { console.log("couldn't get players"); callback(err); return; }
+        if(players.length == 0) { callback("Not enough players on one side."); return; }
+        opponent.players = players;
+        opponents_with_players.push(opponent);
+        if(lastOpponent) {
+          match.opponents = opponents_with_players;
+          matches_with_opponents.push(match);
+          if(lastMatch) {
+            callback(err, matches_with_opponents);
+            return;
+          }
+          var next_match = matches_basic.pop();
+          if(matches_basic.length > 0)
+            db.all('select opponents.ID, opponents.setsWon from opponents where opponents.matchID = $ID', {$ID: next_match.ID},
+              function(err, opponents) { getOpponents(err, opponents, next_match, false); });
+          else
+            db.all('select opponents.ID, opponents.setsWon from opponents where opponents.matchID = $ID', {$ID: next_match.ID},
+              function(err, opponents) { getOpponents(err, opponents, next_match, true); });
+          return;
         }
-        populateOpponent(true);
-        function populateOpponent(lastOpponent) {
-          var _opponent = opponents_basic.pop();
-          (function(opponent) {
-            db.all('select players.ID, players.name, players.sex from matchplayers JOIN players on players.ID = matchplayers.playerID where matchplayers.opponentID = $ID', {$ID: opponent.ID}, _populateOpponent);
-            function _populateOpponent(err, players) {
-              if(err != null) { callback(err); return; }
-              opponent.players = players;
-              opponents_with_players.push(opponent);
-              if(lastOpponent) {
-                match.opponents = opponents_with_players;
-                matches_with_opponents.push(match);
-                if(lastmatch)
-                  callback(err, matches_with_opponents);
-              }
-              
-            }
-          })(_opponent);
-        }
+        var next_opponent = opponents_basic.pop();
+        if(opponents_basic.length > 0)
+          db.all('select ID, playerID from matchplayers where opponentID = $ID', {$ID: next_opponent.ID},
+            function(err, players) { getPlayers(err, players, next_opponent, false); });
+        else
+          db.all('select ID, playerID from matchplayers where opponentID = $ID', {$ID: next_opponent.ID},
+            function(err, players) { getPlayers(err, players, next_opponent, true); });
       }
     }
   }
@@ -49,44 +65,43 @@ function getAllMatches(callback) {
 
 function getMatchByID(ID, callback){
   var db = openDatabase();
-  db.all('select ID, type, datetime, rubberID from matches where ID = $ID', {$ID: ID}, getMatches);
-  function getMatches(err, matches_basic) {
+  db.get('select ID, type, datetime, rubberID from matches where ID = $ID', {$ID: ID}, getMatch);
+  function getMatch(err, match_basic) {
     if(err != null) { callback(err); return; }
-    if(matches_basic.length == 0) { callback(err, []); return; }
-    var matches_with_opponents = [];
-    while(matches_basic.length > 1) {
-      populateMatch(false);
-    }
-    populateMatch(true);
-    function populateMatch(lastmatch) {
-      var match = matches_basic.pop();
-      db.all('select ID, setsWon from opponents where opponents.matchID = $ID', {$ID: match.ID}, _populateMatch);
-      function _populateMatch(err, opponents_basic) {
-        if(err != null) { callback(err); return; }
-        if(opponents_basic.length == 0) { callback("ERROR: No opponents for match."); return; }
-        var opponents_with_players = [];
-        while(opponents_basic.length > 1) {
-          populateOpponent(false);
+    if(match_basic == null) {callback(err, {}); return;}
+
+    db.all('select opponents.ID, opponents.setsWon from opponents where opponents.matchID = $ID', {$ID: match_basic.ID},
+        function(err, opponents) { getOpponents(err, opponents, match_basic); });
+
+    function getOpponents(err, opponents_basic, match) {
+      if(opponents_basic.length != 2) { callback("ERROR: match with "+opponents_basic.length+" opponents."); return; }
+      var opponents_with_players = [];
+
+      var next_opponent = opponents_basic.pop();
+      if(opponents_basic.length > 0)
+        db.all('select ID, playerID from matchplayers where opponentID = $ID', {$ID: next_opponent.ID},
+          function(err, players) { getPlayers(err, players, next_opponent, false); });
+      else
+        db.all('select ID, playerID from matchplayers where opponentID = $ID', {$ID: next_opponent.ID},
+          function(err, players) { getPlayers(err, players, next_opponent, true); });
+
+      function getPlayers(err, players, opponent, lastOpponent) {
+        if(err != null) { console.log("couldn't get players"); callback(err); return; }
+        if(players.length == 0) { callback("Not enough players on one side."); return; }
+        opponent.players = players;
+        opponents_with_players.push(opponent);
+        match.opponents = opponents_with_players;
+        if(lastOpponent) {
+          callback(err, match);
+          return;
         }
-        populateOpponent(true);
-        function populateOpponent(lastOpponent) {
-          var _opponent = opponents_basic.pop();
-          (function(opponent) {
-            db.all('select players.ID, players.name, players.sex from matchplayers JOIN players on players.ID = matchplayers.playerID where matchplayers.opponentID = $ID', {$ID: opponent.ID}, _populateOpponent);
-            function _populateOpponent(err, players) {
-              if(err != null) { callback(err); return; }
-              opponent.players = players;
-              opponents_with_players.push(opponent);
-              if(lastOpponent) {
-                match.opponents = opponents_with_players;
-                matches_with_opponents.push(match);
-                if(lastmatch)
-                  callback(err, matches_with_opponents);
-              }
-              
-            }
-          })(_opponent);
-        }
+        var next_opponent = opponents_basic.pop();
+        if(opponents_basic.length > 0)
+          db.all('select ID, playerID from matchplayers where opponentID = $ID', {$ID: next_opponent.ID},
+            function(err, players) { getPlayers(err, players, next_opponent, false); });
+        else
+          db.all('select ID, playerID from matchplayers where opponentID = $ID', {$ID: next_opponent.ID},
+            function(err, players) { getPlayers(err, players, next_opponent, true); });
       }
     }
   }
@@ -117,12 +132,12 @@ function addMatch(rubber, type, datetime, opponents, callback) {
                   db.close();
                   callback(err, matchID);
                 }
-                else if(opponent.players.length == 0) {
-                  addNextOpponent(err);
+                else if(opponents.length == 0) {
+                  callback(err, matchID);
                 }
                 else {
-                  var player = opponent.players.pop();
-                  db.run('insert into matchplayers (playerID, opponentID) values ($playerID, $opponentID)',
+                  var player = opponents.pop();
+                  db.run('insert into matchopponents (playerID, opponentID) values ($playerID, $opponentID)',
                     {$playerID: player, $opponentID: opponentID},addNextPlayer);
                 }
               }
@@ -132,7 +147,7 @@ function addMatch(rubber, type, datetime, opponents, callback) {
     });
 }
 
-//doesn't delete components or matchplayers
+//doesn't delete components or matchopponents
 function deleteMatch(ID, callback) {
   var db = openDatabase();
   db.run('delete from matches where ID = $id', {$id: ID});
@@ -142,7 +157,7 @@ function deleteMatch(ID, callback) {
     db.run('delete from opponents where matchID = $id', {$id: ID});
   }
   function b(opponent) {
-    db.run('delete from matchplayers where opponentID = $id', {$id: opponent.ID});
+    db.run('delete from matchopponents where opponentID = $id', {$id: opponent.ID});
   }
 }
 
@@ -150,7 +165,7 @@ function deleteAllMatches(callback) {
   var db = openDatabase();
   db.run('delete from matches');
   db.run('delete from opponents');
-  db.run('delete from matchplayers', function(err) { db.close(); callback(err); });
+  db.run('delete from matchopponents', function(err) { db.close(); callback(err); });
 }
 
 module.exports = {

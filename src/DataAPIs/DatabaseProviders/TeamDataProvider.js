@@ -3,60 +3,52 @@
 var openDatabase = require("./DatabaseConnector").openDatabase;
 
 function getAllTeams(callback) {
-  console.log("1");
   var db = openDatabase();
   db.all('select teams.ID, teams.name from teams', getTeams);
   function getTeams(err, teams_basic) {
-    console.log(teams_basic);
     if(err != null) { callback(err); return; }
     if(teams_basic.length == 0) { callback(err, []); return; }
     var teams_with_players = [];
-    while(teams_basic.length > 1) {
-      getTeam(false);
-    }
-    getTeam(true);
+    var next_team = teams_basic.pop();
+    if(teams_basic.length > 0)
+      db.all('select players.ID, players.name, players.sex from teamplayers JOIN players ON players.ID = teamplayers.playerID where teamplayers.teamID = $ID', {$ID: next_team.ID},
+        function(err, players) { getTeam(err, players, next_team, false); });
+    else
+      db.all('select players.ID, players.name, players.sex from teamplayers JOIN players ON players.ID = teamplayers.playerID where teamplayers.teamID = $ID', {$ID: next_team.ID},
+        function(err, players) { getTeam(err, players, next_team, true); });
 
-    function getTeam(lastTeam){
-      var _team = teams_basic.pop();
-      (function(team) {
-        console.log(team);
-        db.all('select players.ID, players.name, players.sex from teamplayers JOIN players where teamplayers.teamID = $ID', {$ID: team.ID}, _getTeam);
-        function _getTeam(err, players) {
-          if(err != null) { console.log("errored"); callback(err); return; }
-          team.players = players;
-          teams_with_players.push(team);
-          console.log(team);
-          if(lastTeam)
-            callback(err, teams_with_players);
-        }
-      })(_team);
+    function getTeam(err, players, team, lastTeam) {
+      if(err != null) { console.log("errored"); callback(err); return; }
+      team.players = players;
+      teams_with_players.push(team);
+      if(lastTeam)
+      {
+        callback(err, teams_with_players);
+        return;
+      }
+      var next_team = teams_basic.pop();
+      if(teams_basic.length > 0)
+        db.all('select players.ID, players.name, players.sex from teamplayers JOIN players ON players.ID = teamplayers.playerID where teamplayers.teamID = $ID', {$ID: next_team.ID},
+          function(err, players) { getTeam(err, players, next_team, false); });
+      else
+        db.all('select players.ID, players.name, players.sex from teamplayers JOIN players ON players.ID = teamplayers.playerID where teamplayers.teamID = $ID', {$ID: next_team.ID},
+          function(err, players) { getTeam(err, players, next_team, true); });
     }
   }
 }
 
 function getTeamByID(ID, callback){
   var db = openDatabase();
-  db.all('select teams.ID, teams.name from teams where ID = $ID', {$ID: ID}, getTeams);
-  function getTeams(err, teams_basic) {
+  db.get('select teams.ID, teams.name from teams where ID = $ID', {$ID: ID}, getTeam);
+  function getTeam(err, team_basic) {
     if(err != null) { callback(err); return; }
-    if(teams_basic.length == 0) { callback(err, []); return; }
-    var teams_with_players = [];
-    while(teams_basic.length > 1) {
-      var team = teams_basic.pop();
-      db.all('select players.ID, players.name, players.sex from teamplayers JOIN players where teamplayers.teamID = $ID', {$ID: team.ID}, stdTeams);
-      function stdTeams(err, players) {
-        if(err != null) { callback(err); return; }
-        team.players = players;
-        teams_with_players.push(team);
-      }
-    }
-    var team = teams_basic.pop();
-    db.all('select players.ID, players.name, players.sex from teamplayers JOIN players where teamplayers.teamID = $ID', {$ID: team.ID}, lastTeam);
-    function lastTeam(err, players) {
+    if(team_basic == null) { callback(err, {}); return; }
+    var team = team_basic;
+    db.all('select players.ID, players.name, players.sex from teamplayers JOIN players ON players.ID = teamplayers.playerID where teamplayers.teamID = $ID', {$ID: team.ID},getPlayers);
+    function getPlayers(err, players) {
       if(err != null) { callback(err); return; }
       team.players = players;
-      teams_with_players.push(team);
-      callback(err, teams_with_players);
+      callback(err, team);
     }
   }
 }

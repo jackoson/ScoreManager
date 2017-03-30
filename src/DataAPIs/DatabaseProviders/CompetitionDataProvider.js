@@ -9,49 +9,46 @@ function getAllCompetitions(callback) {
     if(err != null) { callback(err); return; }
     if(competitions_basic.length == 0) { callback(err, []); return; }
     var competitions_with_rubbers = [];
-    while(competitions_basic.length > 1) {
-      var team = competitions_basic.pop();
-      db.all('select ID from rubbers WHERE competitionID = $ID', {$ID: team.ID}, stdCompetitions);
-      function stdCompetitions(err, players) {
-        if(err != null) { callback(err); return; }
-        team.players = players;
-        competitions_with_rubbers.push(team);
+    var next_competition = competitions_basic.pop();
+    if(competitions_basic.length > 0)
+      db.all('select rubbers.ID from rubbers where rubbers.competitionID = $ID', {$ID: next_competition.ID},
+        function(err, rubbers) { getCompetition(err, rubbers, next_competition, false); });
+    else
+      db.all('select rubbers.ID from rubbers where rubbers.competitionID = $ID', {$ID: next_competition.ID},
+        function(err, rubbers) { getCompetition(err, rubbers, next_competition, true); });
+
+    function getCompetition(err, rubbers, competition, lastCompetition) {
+      if(err != null) { console.log("errored"); callback(err); return; }
+      competition.rubbers = rubbers;
+      competitions_with_rubbers.push(competition);
+      if(lastCompetition)
+      {
+        callback(err, competitions_with_rubbers);
+        return;
       }
-    }
-    var team = competitions_basic.pop();
-    db.all('select ID from rubbers WHERE competitionID = $ID', {$ID: team.ID}, lastCompetition);
-    function lastCompetition(err, players) {
-      if(err != null) { callback(err); return; }
-      team.players = players;
-      competitions_with_rubbers.push(team);
-      callback(err, competitions_with_rubbers);
+      var next_competition = competitions_basic.pop();
+      if(competitions_basic.length > 0)
+        db.all('select rubbers.ID from rubbers where rubbers.competitionID = $ID', {$ID: next_competition.ID},
+          function(err, rubbers) { getCompetition(err, rubbers, next_competition, false); });
+      else
+        db.all('select rubbers.ID from rubbers where rubbers.competitionID = $ID', {$ID: next_competition.ID},
+          function(err, rubbers) { getCompetition(err, rubbers, next_competition, true); });
     }
   }
 }
 
 function getCompetitionByID(ID, callback){
   var db = openDatabase();
-  db.all('select competitions.ID, competitions.name from competitions where ID = $ID', {$ID: ID}, getCompetitions);
-  function getCompetitions(err, competitions_basic) {
+  db.get('select ID, name from competitions where ID = $ID', {$ID: ID}, getCompetition);
+  function getCompetition(err, competition_basic) {
     if(err != null) { callback(err); return; }
-    if(competitions_basic.length == 0) { callback(err, []); return; }
-    var competitions_with_rubbers = [];
-    while(competitions_basic.length > 1) {
-      var team = competitions_basic.pop();
-      db.all('select ID from rubbers WHERE competitionID = $ID', {$ID: team.ID}, stdCompetitions);
-      function stdCompetitions(err, players) {
-        if(err != null) { callback(err); return; }
-        team.players = players;
-        competitions_with_rubbers.push(team);
-      }
-    }
-    var team = competitions_basic.pop();
-    db.all('select ID from rubbers WHERE competitionID = $ID', {$ID: team.ID}, lastCompetition);
-    function lastCompetition(err, players) {
+    if(competition_basic == null) { callback(err, {}); return; }
+    var competition = competition_basic;
+    db.all('select ID from rubbers where competitionID = $ID', {$ID: competition.ID},getRubbers);
+    function getRubbers(err, rubbers) {
       if(err != null) { callback(err); return; }
-      team.players = players;
-      competitions_with_rubbers.push(team);
-      callback(err, competitions_with_rubbers);
+      competition.rubbers = rubbers;
+      callback(err, competition);
     }
   }
 }
