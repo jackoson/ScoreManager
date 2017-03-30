@@ -3,48 +3,62 @@
 var openDatabase = require("./DatabaseConnector").openDatabase;
 
 function getAllTeams(callback) {
+  console.log("1");
   var db = openDatabase();
-  db.all(`select teams.ID, teams.name, group_concat(players.name) as teamplayers from teams JOIN teamplayers on teams.ID = teamplayers.teamID
-JOIN players ON players.ID = teamplayers.playerID GROUP BY teamplayers.teamID;`,
-    function(err, matches) {
-      db.close();
-      matches.forEach(function(match) {
-        var rawScores = match.scores.split(",");
-        var scores = [];
-        rawScores.forEach(function(player) {
-          var rawInfo = player.split(":");
-          scores.push( { name: rawInfo[0], setsWon: rawInfo[1] } );
-        });
-        match.scores = scores;
-      });
-      callback(err, matches);
+  db.all('select teams.ID, teams.name from teams', getTeams);
+  function getTeams(err, teams_basic) {
+    console.log(teams_basic);
+    if(err != null) { callback(err); return; }
+    if(teams_basic.length == 0) { callback(err, []); return; }
+    var teams_with_players = [];
+    while(teams_basic.length > 1) {
+      getTeam(false);
     }
-  );
+    getTeam(true);
+
+    function getTeam(lastTeam){
+      var _team = teams_basic.pop();
+      (function(team) {
+        console.log(team);
+        db.all('select players.ID, players.name, players.sex from teamplayers JOIN players where teamplayers.teamID = $ID', {$ID: team.ID}, _getTeam);
+        function _getTeam(err, players) {
+          if(err != null) { console.log("errored"); callback(err); return; }
+          team.players = players;
+          teams_with_players.push(team);
+          console.log(team);
+          if(lastTeam)
+            callback(err, teams_with_players);
+        }
+      })(_team);
+    }
+  }
 }
 
 function getTeamByID(ID, callback){
   var db = openDatabase();
-  db.get(`select teams.ID, teams.name, group_concat(players.name) as teamplayers from teams JOIN teamplayers on teams.ID = teamplayers.teamID
-JOIN players ON players.ID = teamplayers.playerID where matches.ID = ?;`, ID,
-    function(err, match) {
-      if(match == null || match.ID == null)
-      {
-        callback(err, null);
-        return;
+  db.all('select teams.ID, teams.name from teams where ID = $ID', {$ID: ID}, getTeams);
+  function getTeams(err, teams_basic) {
+    if(err != null) { callback(err); return; }
+    if(teams_basic.length == 0) { callback(err, []); return; }
+    var teams_with_players = [];
+    while(teams_basic.length > 1) {
+      var team = teams_basic.pop();
+      db.all('select players.ID, players.name, players.sex from teamplayers JOIN players where teamplayers.teamID = $ID', {$ID: team.ID}, stdTeams);
+      function stdTeams(err, players) {
+        if(err != null) { callback(err); return; }
+        team.players = players;
+        teams_with_players.push(team);
       }
-      db.close();
-      
-      var rawScores = match.scores.split(",");
-      var scores = [];
-      rawScores.forEach(function(player) {
-        var rawInfo = player.split(":");
-        scores.push( { name: rawInfo[0], setsWon: rawInfo[1] } );
-      });
-      match.scores = scores;
-      
-      callback(err, match);
     }
-  );
+    var team = teams_basic.pop();
+    db.all('select players.ID, players.name, players.sex from teamplayers JOIN players where teamplayers.teamID = $ID', {$ID: team.ID}, lastTeam);
+    function lastTeam(err, players) {
+      if(err != null) { callback(err); return; }
+      team.players = players;
+      teams_with_players.push(team);
+      callback(err, teams_with_players);
+    }
+  }
 }
 
 function getTeamsByName(name, callback) {
@@ -56,15 +70,33 @@ function getTeamsByName(name, callback) {
 
 function addTeam(name, callback) {
   var db = openDatabase();
-  db.run('insert into teams (name) values ($name)', {$name: name}, function() {db.close(); callback(err, this.lastID);});
+  db.run('insert into teams (name) values ($name)', {$name: name}, function(err) {db.close(); callback(err, this.lastID);});
 }
 
 function deleteTeam(ID, callback) {
   var db = openDatabase();
-  db.run('delete from matches where ID = $id', {$id: ID},
+  db.run('delete from teams where ID = $id', {$id: ID},
     function(err) {
-      db.close();
-      callback(err);
+      db.run('delete from teamplayers where teamID = $id', {$id: ID},
+        function(err) {
+          db.close();
+          callback(err);
+        }
+      );
+    }
+  );
+}
+
+function deleteAllTeams(callback) {
+  var db = openDatabase();
+  db.run('delete from teams', 
+    function(err) {
+      db.run('delete from teamplayers',
+        function(err) {
+          db.close();
+          callback(err);
+        }
+      );
     }
   );
 }
@@ -74,5 +106,6 @@ module.exports = {
   getByID : getTeamByID,
   getByName : getTeamsByName,
   add : addTeam,
-  deleteByID : deleteTeam
+  deleteByID : deleteTeam,
+  deleteAll : deleteAllTeams
 }

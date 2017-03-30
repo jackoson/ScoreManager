@@ -7,6 +7,13 @@ var app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(function (error, req, res, next){
+    if (error.message != undefined && error.message.includes("Unexpected token")){
+        res.send("Invalid json");
+    }else{
+        next ();
+    }
+})
 
 app.use(express.static("public"));
 app.use('/players', APIs.players);

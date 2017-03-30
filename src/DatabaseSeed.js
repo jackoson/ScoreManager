@@ -1,20 +1,32 @@
 "use strict"
 
 var APIs = require("./DataAPIs/DatabaseProviders/DataProviderController");
+var unseeder = require("./DatabaseUnSeed");
 
 seed();
 
 function seed() {
-    addPlayers();
+    unseeder.unseed(addPlayers)
 }
 
 function addPlayers() {
     var api = APIs.players;
     a();
-    function a() {api.addPlayer("sam", 'm', b);}
-    function b() {api.addPlayer("georgina", 'f', c);}
-    function c() {api.addPlayer("ian", 'm', d);}
-    function d() {api.addPlayer("lesley", 'f', addMatches);}
+    function a() {api.add("sam", 'm', b);}
+    function b() {api.add("georgina", 'f', c);}
+    function c() {api.add("ian", 'm', d);}
+    function d() {api.add("lesley", 'f', addTeams);}
+}
+
+function addTeams() {
+    var api = APIs.teams;
+    a();
+    function a() {
+        one();
+        function one() { api.add("red", two) }
+        function two() { api.add("pink", three) }
+        function three() { api.add("blue", addMatches) }
+    }
 }
 
 function addMatches() {
@@ -23,33 +35,25 @@ function addMatches() {
     function a() {
         one();
         var player1ID, player2ID;
-        function one() {APIs.players.getPlayersByName("sam", (err, players)=>{player1ID = players[0].ID; console.log(player1ID); two()}) }
-        function two() {APIs.players.getPlayersByName("ian", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {api.addMatch([{"id":player1ID, "setsWon":3}, {"id":player2ID, "setsWon":2}], 'mens singles', '1996-03-16 09:00:00', b);} 
+        function one() {APIs.players.getByName("sam", (err, players)=>{player1ID = players[0].ID; two()}) }
+        function two() {APIs.players.getByName("ian", (err, players)=>{player2ID = players[0].ID; three()}) }
+        function three() {api.add(1, 'mens singles', '1996-03-16 09:00:00',[{"setsWon":3, "players": [player1ID]}, {"setsWon":2, "players": [player2ID]}], b);} 
     }
-    function b() {
+    function b(err, matchID) {
         one();
         var player1ID, player2ID;
-        function one() {APIs.players.getPlayersByName("lesley", (err, players)=>{player1ID = players[0].ID; two()}) }
-        function two() {APIs.players.getPlayersByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {api.addMatch([{"id":player1ID, "setsWon":1}, {"id":player2ID, "setsWon":2}], 'womens singles', '1998-06-16 09:00:00', c);} 
+        function one() {APIs.players.getByName("lesley", (err, players)=>{player1ID = players[0].ID; two()}) }
+        function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
+        function three() {api.add(1, 'womens singles', '1998-06-18 09:00:00',[{"setsWon":1, "players": [player1ID]}, {"setsWon":2, "players": [player2ID]}], c);} 
     }
     function c() {
         one();
         var player1ID, player2ID, player3ID, player4ID;
-        function one() {APIs.players.getPlayersByName("lesley", (err, players)=>{player1ID = players[0].ID; two()}) }
-        function two() {APIs.players.getPlayersByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {APIs.players.getPlayersByName("sam", (err, players)=>{player3ID = players[0].ID; four()}) }
-        function four() {APIs.players.getPlayersByName("ian", (err, players)=>{player4ID = players[0].ID; five()}) }
-        function five() {api.addMatch(
-            [
-                {"id":player1ID, "setsWon":2}, {"id":player2ID, "setsWon":1},
-                {"id":player3ID, "setsWon":2}, {"id":player4ID, "setsWon":1}
-            ]
-            , 'mixed doubles', '2017-03-29 22:05:00', ()=>{console.log("Done");});} 
+        function one() {APIs.players.getByName("lesley", (err, players)=>{player1ID = players[0].ID; two()}) }
+        function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
+        function three() {APIs.players.getByName("sam", (err, players)=>{player3ID = players[0].ID; four()}) }
+        function four() {APIs.players.getByName("ian", (err, players)=>{player4ID = players[0].ID; five()}) }
+        function five() {api.add(1, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [player1ID, player2ID]}, {"setsWon":1, "players": [player3ID, player4ID]}], ()=>{console.log("Seeded");} );} 
     }
-}
 
-function addTeams() {
-    
 }

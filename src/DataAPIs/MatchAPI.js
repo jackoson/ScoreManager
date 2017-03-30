@@ -2,23 +2,35 @@
 var express = require('express');
 var router = express.Router();
 var dbController = require('./DatabaseProviders/DataProviderController');
-var matchesController = dbController.matches;
+var provider = dbController.matches;
 
 router.get('/', function (req, res) {
-  matchesController.getAll(function(err,data){ res.send(data); })
+  provider.getAll(function(err,data){ if (err == null) { res.send(data); } else { res.send(err); }; })
 })
 
 router.get('/id/:id', function (req, res) {
-  matchesController.getByID(req.params.id, function(err,data){ res.send(data); })
+  provider.getByID(req.params.id, function(err,data){ res.send(data); })
 })
 
-router.post('/add', function (req, res) {
-  var details = JSON.parse(req.body.params);
-  matchesController.add(details.players, details.type, details.datetime, function(err){ if (err == null) {res.send("success");} else {res.send("fail");}; })
+router.use('/add', function(req, res, next) {
+  if (req.body.opponents.length != 2) {
+    res.send("ERROR: Need two and only two oppenents for a match.");
+    return;
+  }
+  else {
+    next();
+  }
+})
+router.post('/add', function (req, res) { 
+  provider.add(req.body.rubber, req.body.type, req.body.datetime, req.body.opponents, function(err, id){
+    if (err == null) { res.send(id.toString()); } else { res.send(err); };
+  });
 })
 
-router.get('/delete', function (req, res) {
-  matchesController.deleteByID(req.query.id, function(err){ if (err == null) {res.send("success");} else {res.send("fail");}; })
+router.delete('/id/:id', function (req, res) {
+  provider.deleteByID(req.params.id, function(err){
+    if (err == null) {res.send("success");} else {res.send(err);}; 
+  });
 })
 
 module.exports = router

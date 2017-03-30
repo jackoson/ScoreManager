@@ -34,8 +34,6 @@ function getPlayersBySex(sex, callback) {
 }
 
 function addPlayer(name, sex, callback) {
-  if (name == null || sex == null) { callback("ERROR: Need both name and gender to add player."); }
-  if (!(sex == male || sex == female || sex == other)) {callback("ERROR: Not valid sex."); }
   var db = openDatabase();
   db.run('insert into players (name, sex) values ($name, $sex)', {$name: name, $sex: sex}, 
     function(err) { db.close(); callback(err, this.lastID); }
@@ -55,7 +53,6 @@ function deleteAllPlayers(callback) {
     function(err) { db.close(); callback(err); }
   );
 }
-
 
 module.exports = {
   getAll : getAllPlayers,
