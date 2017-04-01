@@ -62,14 +62,14 @@ function addMatches() {
         var player1ID, player2ID;
         function one() {APIs.players.getByName("sam", (err, players)=>{player1ID = players[0].ID; two()}) }
         function two() {APIs.players.getByName("ian", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {api.add(1, 'mens singles', '1996-03-16 09:00:00',[{"setsWon":3, "players": [player1ID]}, {"setsWon":2, "players": [player2ID]}], b);} 
+        function three() {api.add(1, 'mens singles', '1996-03-16 09:00:00',[{"setsWon":3, "teamID": 1, "players": [player1ID]}, {"setsWon":2, "teamID": 2, "players": [player2ID]}], b);} 
     }
     function b(err, matchID) {
         one();
         var player1ID, player2ID;
         function one() {APIs.players.getByName("lesley", (err, players)=>{player1ID = players[0].ID; two()}) }
         function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {api.add(1, 'womens singles', '1998-06-18 09:00:00',[{"setsWon":1, "players": [player1ID]}, {"setsWon":2, "players": [player2ID]}], c);} 
+        function three() {api.add(1, 'womens singles', '1998-06-18 09:00:00',[{"setsWon":1, "teamID": 1, "players": [player1ID]}, {"setsWon":2, "teamID": 2, "players": [player2ID]}], c);} 
     }
     function c() {
         one();
