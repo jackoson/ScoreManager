@@ -1,0 +1,63 @@
+
+
+div#splashbox {
+    background-color: #56A3A6;
+}
+
+h1 {
+  color: white;
+}
+
+
+
+@media (min-width: 80em) {
+
+  div#splashbox {
+    width: 70em;
+    margin: 10% auto;
+    padding: 4em;
+  }
+
+  div#splashbox > div#bigheading > * {
+    display: inline-block;
+  }
+  
+  div#splashbox > div#bigheading > img {
+    float: right;
+  }
+  
+}
+
+@media (max-width: 80em) and (min-width: 30em) {
+
+  div#splashbox {
+    margin: 10% auto;
+    padding: 5%;
+  }
+  
+  div#splashbox > div#bigheading > * {
+    display: inline-block;
+  }
+  
+  div#splashbox > div#bigheading > img {
+    float: right;
+  }
+
+}
+
+@media (max-width: 30em) {
+
+  div#splashbox {
+    margin: 10% auto;
+    padding: 5%;
+  }
+
+  div#splashbox > div#bigheading > * {
+    display: block;
+  }
+  
+  div#splashbox > div#bigheading > img {
+    float: none;
+  }
+  
+}

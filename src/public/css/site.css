@@ -1,0 +1,17 @@
+
+html {
+  font-family: 'Raleway', sans-serif;
+  background-color: #DDF0FF;
+}
+
+@media (min-width: 30em) {
+  html {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 30em) {
+  html {
+    font-size: 2em;
+  }
+}
