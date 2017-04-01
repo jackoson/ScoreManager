@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  lang="en-GB" xml:lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <title>UBSTESS</title>
+</head>
+<body>
+  addr:<br/>
+  <!--<input type="text" id="url" size="100" value="http://localhost:8080/"></input><br/>-->
+  <input type="text" id="url" size="100" value="http://192.168.0.12:8080/"></input><br/>
+  data:<br/>
+  <textarea id="xmldata" cols="100" rows="5"></textarea><br/>
+  <input type="button" value="get" id="get" />
+  <input type="button" value="post" id="post" />
+  <input type="button" value="delete" id="del" />
+  <div id="output"></div>
+  
+  <script>
+    document.getElementById("get").addEventListener('click', get);
+    document.getElementById("post").addEventListener('click', post);
+    document.getElementById("del").addEventListener('click', del);
+
+    function get(event) {
+      var q = setup(event);
+      var url = document.getElementById("url").value;
+      q.open("GET", url, true);
+      q.send();
+    }
+
+    function post(event) {
+      var q = setup(event);
+      var url = document.getElementById("url").value;
+      q.open("POST", url, true);
+      q.setRequestHeader("Content-Type", "application/json");
+      var data = document.getElementById("xmldata").value;
+      q.send(data);
+    }
+
+    function del(event) {
+      var q = setup(event);
+      var url = document.getElementById("url").value;
+      q.open("DELETE", url, true);
+      q.send();
+    }
+
+    function setup(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var q = new XMLHttpRequest();
+      q.onreadystatechange = receive;
+      return q;
+      function receive() {
+        if (this.readyState != XMLHttpRequest.DONE)
+          return;
+        document.getElementById("output").innerHTML = this.responseText;
+      }
+    }
+  </script>
+</body>
+</html>
