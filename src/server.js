@@ -18,12 +18,12 @@ app.use('/competitions', APIs.competitions);
 app.use('/teams', APIs.teams);
 
 var port = 8080;
-var address = "192.168.0.12"//"localhost"
+var address = fs.readFileSync('ipaddress.txt', {encoding: 'utf-8'})//"192.168.0.12"//"localhost"
+console.log(address);
 app.listen(port, address);
 
 console.log("visit...");
 console.log(address+":"+port);
-
 
 function deliverXHTML(res, path, stat) {
     if (path.endsWith(".html"))
