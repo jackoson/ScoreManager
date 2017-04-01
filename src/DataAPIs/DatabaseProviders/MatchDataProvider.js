@@ -123,41 +123,42 @@ function addMatch(rubber, type, datetime, opponents, callback) {
         else {
           var opponent = opponents.pop();
           db.run('insert into opponents (matchID, setsWon) values ($matchID, $setsWon)', {$matchID: matchID, $setsWon: opponent.setsWon},
-            function(err) {
-              if(err != null) { db.close(); callback(err); return;}
-              var opponentID = this.lastID;
-              addNextPlayer(err);
-              function addNextPlayer(err) {
-                if(err != null) {
-                  db.close();
-                  callback(err, matchID);
-                }
-                else if(opponents.length == 0) {
-                  callback(err, matchID);
-                }
-                else {
-                  var player = opponents.pop();
-                  db.run('insert into matchopponents (playerID, opponentID) values ($playerID, $opponentID)',
-                    {$playerID: player, $opponentID: opponentID},addNextPlayer);
-                }
+          function(err) {
+            if(err != null) { db.close(); callback(err); return;}
+            var opponentID = this.lastID;
+            addNextPlayer(err);
+            function addNextPlayer(err) {
+              if(err != null) {
+                db.close();
+                callback(err, matchID);
               }
-            }); 
+              else if(opponent.players.length == 0) {
+                addNextOpponent(err);
+              }
+              else {
+                var player = opponent.players.pop();
+                db.run('insert into matchplayers (playerID, opponentID) values ($playerID, $opponentID)',
+                {$playerID: player, $opponentID: opponentID},addNextPlayer);
+              }
+            }
+          });
         }
       }
     });
 }
 
-//doesn't delete components or matchopponents
+//doesn't delete components or matchplayers
 function deleteMatch(ID, callback) {
   var db = openDatabase();
   db.run('delete from matches where ID = $id', {$id: ID});
-  db.all('select from opponents where matchID = $id', {$id: ID}, a);
+  db.all('select ID from opponents where matchID = $id', {$id: ID}, a);
   function a(err, opponents) {
+    if(err!=null) { callback(err); }
     opponents.forEach(b);
-    db.run('delete from opponents where matchID = $id', {$id: ID});
+    db.run('delete from opponents where matchID = $id', {$id: ID}, callback);
   }
   function b(opponent) {
-    db.run('delete from matchopponents where opponentID = $id', {$id: opponent.ID});
+    db.run('delete from matchplayers where opponentID = $id', {$id: opponent.ID});
   }
 }
 
@@ -165,7 +166,7 @@ function deleteAllMatches(callback) {
   var db = openDatabase();
   db.run('delete from matches');
   db.run('delete from opponents');
-  db.run('delete from matchopponents', function(err) { db.close(); callback(err); });
+  db.run('delete from matchplayers', function(err) { db.close(); callback(err); });
 }
 
 module.exports = {
