@@ -23,10 +23,35 @@ function addTeams() {
     a();
     function a() {
         one();
-        function one() { api.add("red", two) }
-        function two() { api.add("pink", three) }
-        function three() { api.add("blue", addMatches) }
+        var player1ID, player2ID;
+        var teamID;
+        function one() { api.add("blue", (err, id)=>{teamID = id; two();}) }
+        function two() {APIs.players.getByName("lesley", (err, players)=>{player1ID = players[0].ID; three()}) }
+        function three() {api.addTeamPlayer(player1ID, teamID, four);}
+        function four() {APIs.players.getByName("sam", (err, players)=>{player2ID = players[0].ID; five()}) }
+        function five() {api.addTeamPlayer(player2ID, teamID, b);}
     }
+    function b() {
+        one();
+        var player1ID, player2ID;
+        var teamID;
+        function one() { api.add("red", (err, id)=>{teamID = id; two();}) }
+        function two() {APIs.players.getByName("ian", (err, players)=>{player1ID = players[0].ID; three()}) }
+        function three() {api.addTeamPlayer(player1ID, teamID, four);}
+        function four() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; five()}) }
+        function five() {api.addTeamPlayer(player2ID, teamID, c);}
+    }
+    function c() {
+        one();
+        var player1ID, player2ID;
+        var teamID;
+        function one() { api.add("pink", (err, id)=>{teamID = id; two();}) }
+        function two() {APIs.players.getByName("sam", (err, players)=>{player1ID = players[0].ID; three()}) }
+        function three() {api.addTeamPlayer(player1ID, teamID, four);}
+        function four() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; five()}) }
+        function five() {api.addTeamPlayer(player2ID, teamID, addMatches);}
+    }
+    
 }
 
 function addMatches() {
