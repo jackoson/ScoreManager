@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(handleBodyParseError)
 
+app.use(recordInfo);
+
 var options = { setHeaders: deliverXHTML_static };
 app.use(express.static("public", options));
 
@@ -45,4 +47,9 @@ function handleBodyParseError(error, req, res, next){
         res.send("Invalid json");
     else
         next ();
+}
+
+function recordInfo(req, res, next) {
+    fs.appendFileSync('reqs.log', "url: "+ req.url +", ip: " + req.ip + ", agent: "+req.headers['user-agent'] + "\n"); 
+    next();
 }
