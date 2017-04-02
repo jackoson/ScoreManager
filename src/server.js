@@ -14,7 +14,7 @@ app.use(handleBodyParseError)
 app.use(recordInfo);
 
 var options = { setHeaders: deliverXHTML_static };
-app.use(express.static("public", options));
+app.use(express.static(path.resolve(__dirname, 'public'), options));
 
 app.set('view engine', 'ejs')
 app.set('views', './templates');
