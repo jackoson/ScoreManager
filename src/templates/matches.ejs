@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  lang="en-GB" xml:lang="en-GB">
+<head>
+  <% include shared/std_header %>
+  <link rel="stylesheet" href="/css/matches.css" />
+</head>
+<body>
+  <% include shared/std_navbar %>
+  <h1>Matches</h1>
+  <% matches.forEach( function(match) { %>
+
+  <div class="match" >
+  
+  <div class="matchData matchDate">
+    <div class="heading" >Date</div>
+    <div class="value" ><%= match.datetime %></div>
+  </div>
+  <div class="matchData matchType">
+    <div class="heading" >Type</div>
+    <div class="value" ><%= match.type %></div>
+  </div>
+  <% match.opponents.forEach( function(opponent){ %>
+  <div class="opponent" >
+    <div class="opponentSetsWon" >
+      <div class="heading" >Sets</div>
+      <div class="value" ><%= opponent.setsWon %></div>
+    </div>
+    <div class="players" >
+      <% if(opponent.players.length == 1) { %>
+      <div class="heading" >Player</div>
+      <% } else { %>
+      <div class="heading" >Players</div>
+      <% } %>
+      <div class="value" >
+        <% for( var i=0; i<opponent.players.length-1; i++) { %>
+          <div class="player"><a href="#"><%= opponent.players[i].name %></a></div>,
+        <% } %>
+          <div class="player"><a href="#"><%= opponent.players[opponent.players.length-1].name %></a></div>
+      </div>
+    </div>
+    <div class="opponentTeam" >
+      <% if(opponent.teamID != null) { %>
+      <div class="heading" >Team</div>
+      <div class="value" ><%= opponent.teamName %></div>
+      <% } %>
+    </div>
+  </div>
+  <% }) %>
+  </div>
+
+  <% }); %>
+
+</body>
+</html>

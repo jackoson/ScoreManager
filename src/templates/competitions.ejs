@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  lang="en-GB" xml:lang="en-GB">
+<head>
+  <% include shared/std_header %>
+  <link rel="stylesheet" href="/css/competitions.css" />
+</head>
+<body>
+  <% include shared/std_navbar %>
+  <h1>Competitions</h1>
+  <table>
+  <tr>
+    <td>Name</td>
+  </tr>
+  <% competitions.forEach( function(competition) { %>
+  <tr>
+    <td> <%= competition.name %> </td>
+  </tr>
+  <% }); %>
+  </table>
+</body>
+</html>

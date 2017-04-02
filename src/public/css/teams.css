@@ -1,0 +1,36 @@
+
+div.team {
+  border: 1px solid black;
+  padding: 1em;
+}
+
+
+
+div.team > div.teamName {
+  font-weight: bold;
+  font-size: 2em;
+}
+
+div.team > div.player > * {
+  display: inline-block;
+}
+
+div.team > div.player > div.playerName {
+  width: 80%;
+}
+
+@media (min-width: 30em) {
+  div.team {
+    display: inline-block;
+    margin: 1em;
+    width: 10em;
+  }
+}
+
+@media (max-width: 30em) {
+  div.team {
+    display: block;
+    margin: 0.5em auto;
+    width: 80%;
+  }
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  lang="en-GB" xml:lang="en-GB">
+<head>
+  <% include shared/std_header %>
+  <link rel="stylesheet" href="/css/teams.css" />
+</head>
+<body>
+  <% include shared/std_navbar %>
+  <h1>Teams</h1>
+  <% teams.forEach( function(team) { %>
+  
+  <div class="team" >
+  <div class="teamName"><%= team.name %></div>
+    <% team.players.forEach( function(player){ %>
+      <div class="player" >
+        <div class="playerName" ><%= player.name %></div>
+        <div class="playerSex" ><%= player.sex %></div>
+      </div>
+    <% }) %>
+  </div>
+  <% }) %>
+</body>
+</html>

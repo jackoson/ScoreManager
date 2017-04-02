@@ -8,7 +8,7 @@ var selectOpponentsSQLString = `select opponents.ID as ID, opponents.setsWon, te
                                 LEFT JOIN teamplays ON teamplays.opponentID = opponents.ID
                                 LEFT JOIN teams ON teams.ID = teamplays.teamID
                                 where opponents.matchID = $ID`;
-var selectPlayersSQLString = 'select ID, playerID from matchplayers where opponentID = $ID';
+var selectPlayersSQLString = 'select matchplayers.ID, players.ID, players.name from matchplayers JOIN players ON players.ID = matchplayers.playerID where matchplayers.opponentID = $ID';
 function getAllMatches(callback) {
   var db = openDatabase();
   db.all('select ID, datetime, type from matches', getMatches);
