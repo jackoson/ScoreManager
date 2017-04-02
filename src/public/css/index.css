@@ -1,20 +1,44 @@
 
+img#logo {
+  width: 10em;
+  height: 10em;
+}
 
 div#splashbox {
     background-color: #56A3A6;
+    display: block;
 }
 
 h1 {
   color: white;
 }
 
+div#poster {
+  text-align: center;
+}
 
+div#poster > img {
+  width: 60%;
+  margin: auto;
+}
+
+@media (min-width: 30em) {
+  div#poster > img {
+    margin-top: 3em;
+  }
+}
+
+@media (max-width: 30em) {
+  div#poster > img {
+    width: 90%;
+  }
+}
 
 @media (min-width: 80em) {
 
   div#splashbox {
     width: 70em;
-    margin: 10% auto;
+    margin: 5% auto;
     padding: 4em;
   }
 
