@@ -1,5 +1,6 @@
 "use strict"
 var fs = require("fs");
+var path = require("path");
 var APIs = require("./DataAPIs/APIController");
 var templateManager = require('./TemplateManager');
 var express = require('express');
@@ -26,7 +27,8 @@ app.use('/competitions', APIs.competitions);
 app.use('/teams', APIs.teams);
 
 var port = 8080;
-var address = fs.readFileSync('ipaddress.txt', {encoding: 'utf-8'})//"192.168.0.12"//"localhost"
+
+var address = fs.readFileSync(path.resolve(__dirname, 'ipaddress.txt'), {encoding: 'utf-8'})//"192.168.0.12"//"localhost"
 app.listen(port, address);
 
 console.log("visit...");
@@ -50,6 +52,6 @@ function handleBodyParseError(error, req, res, next){
 }
 
 function recordInfo(req, res, next) {
-    fs.appendFileSync('reqs.log', "url: "+ req.url +", ip: " + req.ip + ", agent: "+req.headers['user-agent'] + "\n"); 
+    fs.appendFileSync(path.resolve(__dirname, '../reqs.log'), "url: "+ req.url +", ip: " + req.ip + ", agent: "+req.headers['user-agent'] + "\n"); 
     next();
 }
