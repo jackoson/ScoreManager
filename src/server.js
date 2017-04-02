@@ -1,6 +1,7 @@
 "use strict"
 var fs = require("fs");
 var APIs = require("./DataAPIs/APIController");
+var templateManager = require('./TemplateManager');
 var express = require('express');
 var app = express();
 
@@ -9,9 +10,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(handleBodyParseError)
 
-
-var options = { setHeaders: deliverXHTML };
+var options = { setHeaders: deliverXHTML_static };
 app.use(express.static("public", options));
+
+app.set('view engine', 'ejs')
+app.set('views', './templates');
+app.use('/templates', deliverXHTML_templates);
+app.use('/templates', templateManager);
+
 app.use('/players', APIs.players);
 app.use('/matches', APIs.matches);
 app.use('/competitions', APIs.competitions);
@@ -19,15 +25,19 @@ app.use('/teams', APIs.teams);
 
 var port = 8080;
 var address = fs.readFileSync('ipaddress.txt', {encoding: 'utf-8'})//"192.168.0.12"//"localhost"
-console.log(address);
 app.listen(port, address);
 
 console.log("visit...");
 console.log(address+":"+port);
 
-function deliverXHTML(res, path, stat) {
+function deliverXHTML_static(res, path, stat) {
     if (path.endsWith(".html"))
         res.header("Content-Type", "application/xhtml+xml");
+}
+
+function deliverXHTML_templates(req, res, next) {
+    res.header("Content-Type", "application/xhtml+xml");
+    next();
 }
 
 function handleBodyParseError(error, req, res, next){
