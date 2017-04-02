@@ -17,7 +17,7 @@ var options = { setHeaders: deliverXHTML_static };
 app.use(express.static(path.resolve(__dirname, 'public'), options));
 
 app.set('view engine', 'ejs')
-app.set('views', './templates');
+app.set('views', path.resolve(__dirname, './templates'));
 app.use('/templates', deliverXHTML_templates);
 app.use('/templates', templateManager);
 
