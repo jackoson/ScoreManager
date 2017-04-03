@@ -52,6 +52,6 @@ function handleBodyParseError(error, req, res, next){
 }
 
 function recordInfo(req, res, next) {
-    fs.appendFileSync(path.resolve(__dirname, '../reqs.log'), "url: "+ req.url +", ip: " + req.ip + ", agent: "+req.headers['user-agent'] + "\n"); 
+    fs.appendFileSync(path.resolve(__dirname, '../reqs.log'), "time: " + Date() + ", url: "+ req.url +", ip: " + req.ip + ", agent: "+req.headers['user-agent'] + "\n"); 
     next();
 }
