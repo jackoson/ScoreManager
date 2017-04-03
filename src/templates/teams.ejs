@@ -14,7 +14,7 @@
   <div class="teamName"><%= team.name %></div>
     <% team.players.forEach( function(player){ %>
       <div class="player" >
-        <div class="playerName" ><%= player.name %></div>
+        <div class="playerName" ><a href="/templates/players/id/<%= player.ID %>"><%= player.name %></a></div>
         <div class="playerSex" ><%= player.sex %></div>
       </div>
     <% }) %>

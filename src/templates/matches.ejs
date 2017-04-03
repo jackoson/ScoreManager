@@ -34,9 +34,9 @@
         <% } %>
         <div class="value" >
           <% for( var i=0; i<opponent.players.length-1; i++) { %>
-            <div class="player"><a href="#"><%= opponent.players[i].name %></a></div>,
+            <div class="player"><a href="/templates/players/id/<%= opponent.players[i].ID %>"><%= opponent.players[i].name %></a></div>,
           <% } %>
-            <div class="player"><a href="#"><%= opponent.players[opponent.players.length-1].name %></a></div>
+            <div class="player"><a href="/templates/players/id/<%= opponent.players[opponent.players.length-1].ID %>"><%= opponent.players[opponent.players.length-1].name %></a></div>
         </div>
       </div>
       <div class="opponentTeam" >

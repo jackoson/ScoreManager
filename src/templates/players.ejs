@@ -15,7 +15,7 @@
   </tr>
   <% players.forEach( function(player) { %>
   <tr>
-    <td> <%= player.name %> </td>
+    <td> <a href="/templates/players/id/<%= player.ID %>"><%= player.name %></a> </td>
     <td> <%= player.sex %> </td>
   </tr>
   <% }); %>
