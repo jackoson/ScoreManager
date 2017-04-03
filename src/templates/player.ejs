@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  lang="en-GB" xml:lang="en-GB">
+<head>
+  <% include shared/std_header %>
+  <link rel="stylesheet" href="/css/player.css" />
+</head>
+<body>
+  <% include shared/std_navbar %>
+  <h1><%= player.name %> ( <%= player.sex %> ) </h1>
+  <div id="tournements" class="infoTable" >
+    <h2>Tournements</h2>
+    <table>
+    <tr>
+      <td> Name </td>
+      <td> Points </td>
+    </tr>
+    <% player.tournements.forEach(function(tournement){ %>
+    <tr>
+      <td> <%= tournement.name %> </td>
+    </tr>  
+    <% }) %>
+    </table>
+  </div>
+
+  <div id="otherMatches" class="infoTable" >
+    <h2>All Matches</h2>
+    <table>
+    <tr>
+      <td> Date </td>
+      <td> Score </td>
+    </tr>
+    <% player.matches.forEach(function(match){ %>
+    <tr>
+      <td> <%= match.datetime %> </td>
+      <td> <%= match.setsWon %> <%= match.opSetsWon %> </td>
+    </tr>  
+    <% }) %>
+    </table>
+  </div>
+
+</body>
+</html>

@@ -11,9 +11,47 @@ function getAllPlayers(callback) {
 
 function getPlayerByID(ID, callback){
   var db = openDatabase();
-  db.get('SELECT * FROM players where ID = $value', {$value: ID},
-    function(err, row) { db.close(); callback(err, row); }
-  );
+  db.get('SELECT players.ID, players.name, players.sex FROM players where ID = $value', {$value: ID}, getPlayer );
+  function getPlayer(err, player_basic) {
+    if(err != null) { callback(err); return; }
+    if(player_basic == null) { callback(err, {}); return; }
+    var player = player_basic;
+    db.all(`select matchplayers.ID, opponents.setsWon, opponents.ID, matches.datetime, ops.ID as opID, ops.setsWon as opSetsWon from matchplayers
+            JOIN opponents ON opponents.ID = matchplayers.opponentID
+            JOIN matches ON matches.ID = opponents.matchID
+            JOIN opponents ops ON matches.ID = ops.matchID
+            where matchplayers.playerID = $ID`, {$ID: player.ID}, getMatches);
+    function getMatches(err, matches_basic) {
+      if(err != null) { callback(err); return; }
+      var matches = {};
+      matches_basic.forEach(function(match_data){
+        if(matches[match_data.ID] == undefined) { matches[match_data.ID] = {}}
+        if(match_data.ID == match_data.opID) {
+          matches[match_data.ID].match = match_data;
+        } else {
+          matches[match_data.ID].opID = match_data.opID;
+          matches[match_data.ID].opSetsWon = match_data.opSetsWon;
+        }
+      });
+      matches = Object.keys(matches).map(function(k){
+        matches[k].match.opID = matches[k].opID; 
+        matches[k].match.opSetsWon = matches[k].opSetsWon;
+        return matches[k].match;
+      });
+      player.matches = matches;
+      db.all(`select competitions.ID, competitions.name from matchplayers
+            JOIN opponents ON opponents.ID = matchplayers.opponentID
+            JOIN matches ON matches.ID = opponents.matchID
+            JOIN rubbers ON rubbers.ID = matches.rubberID
+            JOIN competitions ON competitions.ID = rubbers.competitionID
+            where matchplayers.playerID = $ID`, {$ID: ID}, getTournements);
+    }
+    function getTournements(err, tournements) {
+      if(err != null) { console.log("hi"); callback(err); return; }
+      player.tournements = tournements;      
+      callback(err, player);
+    }
+  }
 }
 
 function getPlayersByName(name, callback) {

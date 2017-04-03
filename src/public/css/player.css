@@ -1,0 +1,15 @@
+
+tr:nth-child(1) {
+  font-weight: bold;
+}
+
+td:nth-child(1) {
+  width: 10em;
+}
+
+div.infoTable {
+  display: inline-block;
+  margin: 1em;
+  padding: 1em;
+  border: 1px solid black;
+}
