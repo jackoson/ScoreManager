@@ -1,4 +1,22 @@
 
+div.infoTable {
+  margin: 1em;
+}
+
+div#tournements {
+  display: inline-block;
+  vertical-align: top;
+}
+
+div#otherMatches {
+  display: inline-block;
+  vertical-align: top;
+}
+
+div#otherMatches > h2 {
+  margin-left: 1em;
+}
+
 tr:nth-child(1) {
   font-weight: bold;
 }
@@ -7,9 +25,83 @@ td:nth-child(1) {
   width: 10em;
 }
 
-div.infoTable {
-  display: inline-block;
-  margin: 1em;
-  padding: 1em;
+div.match {
   border: 1px solid black;
+  padding: 1em;
+}
+
+div.matchData > div {
+  display: inline-block;
+}
+
+div.matchData > div.heading {
+  width: 3em;
+}
+
+div.match > div.opponent {
+  border: 1px solid black;
+  padding: 0.5em;
+  margin-top: 0.5em;
+}
+
+div.match > div.opponent > * {
+  display: inline-block;
+  text-align: center;
+}
+
+div.match > div.opponent > div.opponentSetsWon > div.value {
+  font-size: 2em;
+}
+
+div.match > div.opponent > div.players > div.value * {
+  display: inline;
+  text-decoration: none;
+}
+
+div.match > div.opponent > div.players > div.value {
+  font-size: 1.5em;
+}
+
+div.match > div.opponent > div.opponentTeam > div.value {
+  font-size: 2em;
+}
+
+div.match {
+    display: block;
+}
+
+@media (min-width: 30em) {
+  div.match {
+    margin: 1em;
+    width: 20em;
+  }
+
+  div.match > div.opponent > div.players {
+    width: 10em;
+  }
+
+  div.match > div.opponent > div.opponentTeam {
+    width: 5em;
+  }
+  div.match > div.opponent > div.opponentSetsWon {
+    width: 3em;
+  }
+}
+
+@media (max-width: 30em) {
+  div.match {
+    margin: 0.5em auto;
+    width: 80%;
+  }
+
+  div.match > div.opponent > div.players {
+    width: 100%;
+  }
+
+  div.match > div.opponent > div.opponentTeam {
+    width: 100%;
+  }
+  div.match > div.opponent > div.opponentSetsWon {
+    width: 100%;
+  }
 }

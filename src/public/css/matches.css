@@ -40,9 +40,12 @@ div.match > div.opponent > div.opponentTeam > div.value {
   font-size: 2em;
 }
 
+div.match {
+    display: block;
+}
+
 @media (min-width: 30em) {
   div.match {
-    display: inline-block;
     margin: 1em;
     width: 20em;
   }
@@ -61,7 +64,6 @@ div.match > div.opponent > div.opponentTeam > div.value {
 
 @media (max-width: 30em) {
   div.match {
-    display: block;
     margin: 0.5em auto;
     width: 80%;
   }
