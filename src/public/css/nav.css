@@ -1,4 +1,44 @@
 
+div.modal-background {
+  background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0em;
+  left: 0em;
+  width: 100%;
+  height: 100%;
+}
+
+nav#navBar div.signin {
+  text-align: right;
+  cursor: pointer;
+}
+
+div.modal {
+  background-color: #56A3A6;
+  padding: 1em;
+  max-height: calc(100% - 100px);
+  position: fixed;
+    top: 50%;
+    left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+div#login_modal {
+  display: none;
+}
+
+div#logout_modal {
+  display: none;
+}
+
+div.modal-button {
+  padding: 0.5em;
+  text-align: center;
+  background-color: #3b8d90;
+  cursor: pointer;
+}
+
+
 
 nav#navBar {
   background-color: #56A3A6;
@@ -14,10 +54,22 @@ nav#navBar div.navItem {
   padding: 1em;
 }
 
-nav#navBar div.navItem:hover {
+nav#navBar div.navLink:hover {
   background-color: #469396;
 }
 
 nav#navBar div#navBarTitle{
   font-weight: bold;
+}
+
+@media (min-width: 60em) {
+  nav#navBar div.signin {
+    float: right;
+  }
+}
+
+@media (max-width: 60em) {
+  nav#navBar div.signin {
+    float: none;
+  }
 }

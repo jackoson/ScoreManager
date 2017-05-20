@@ -1,8 +1,35 @@
 <nav id="navBar" >
   <a href="/landing.html" ><div class="navItem" id="navBarTitle" >UBSTUSS</div></a>
-  <a href="/templates/home" ><div class="navItem navButton" >Home</div></a>
-  <a href="/templates/players" ><div class="navItem navButton" >Players</div></a>
-  <a href="/templates/matches" ><div class="navItem navButton" >Matches</div></a>
-  <a href="/templates/teams" ><div class="navItem navButton" >Teams</div></a>
-  <a href="/templates/competitions" ><div class="navItem navButton" >Competitions</div></a>
+  <a href="/templates/home" ><div class="navItem navLink" >Home</div></a>
+  <a href="/templates/players" ><div class="navItem navLink" >Players</div></a>
+  <a href="/templates/matches" ><div class="navItem navLink" >Matches</div></a>
+  <a href="/templates/teams" ><div class="navItem navLink" >Teams</div></a>
+  <a href="/templates/competitions" ><div class="navItem navLink" >Competitions</div></a>
+  <div id="signin" class="navItem signin">
+    <% if (logged_in) { %>
+      Logged in
+      <input type="hidden" id="logged_in" value="true" />
+    <% } else { %>
+      Viewing Access Only
+      <input type="hidden" id="logged_in" value="false" />
+    <% } %>
+  </div>
 </nav>
+
+<div id="login_modal" class="modal-background">
+  <div class="modal model-item">
+    Edit Mode Disabled<br/>
+    <div id="login_button" class="modal-button model-item">
+      <a class="model-item">Log in</a>
+    </div>
+  </div>
+</div>
+
+<div id="logout_modal" class="modal-background">
+  <div class="modal model-item">
+    Edit Mode Enabled<br/>
+    <div id="logout_button" class="modal-button model-item">
+      <a class="model-item">Log out</a>
+    </div>
+  </div>
+</div>
