@@ -1,0 +1,31 @@
+
+ul {
+  padding-left: 0em;
+}
+
+li {
+  color: white;
+  display: inline-block;
+  height: 8em;
+  padding: 1em;
+  background-color: #00007b;
+  border-radius: 0.5em;
+}
+
+li:hover {
+  background-color: #0000bb;
+}
+
+@media (min-width: 30em) {
+  li {
+    width: 26em;
+    margin: 1em;
+  }
+}
+
+@media (max-width: 30em) {
+  li {
+    width: 80%;
+    margin: 5%;
+  }
+}

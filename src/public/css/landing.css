@@ -22,6 +22,13 @@ div#poster {
   display: block;
 }
 
+div.button {
+  display: inline-block;
+  background-color: #44799e;
+  padding: 5px;
+  color: white;
+}
+
 @media (min-width: 80em) {
 
   div#splashbox {
@@ -38,11 +45,11 @@ div#poster {
   div#splashbox > div#bigheading > * {
     display: inline-block;
   }
-  
+
   div#splashbox > div#bigheading > img {
     float: right;
   }
-  
+
 }
 
 @media (max-width: 80em) and (min-width: 30em) {
@@ -51,7 +58,7 @@ div#poster {
     margin: 10% auto;
     padding: 5%;
   }
-  
+
   div#poster {
     width: 100%;
     margin: auto;
@@ -60,7 +67,7 @@ div#poster {
   div#splashbox > div#bigheading > * {
     display: inline-block;
   }
-  
+
   div#splashbox > div#bigheading > img {
     float: right;
   }
@@ -73,13 +80,13 @@ div#poster {
     margin: 10% auto;
     padding: 5%;
   }
-    
+
   div#splashbox > div#bigheading > * {
     display: block;
   }
-  
+
   div#splashbox > div#bigheading > img {
     float: none;
   }
-  
+
 }

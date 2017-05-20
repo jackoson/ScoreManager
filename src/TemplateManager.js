@@ -40,4 +40,8 @@ router.get('/competitions', function (req, res) {
   })
 })
 
+router.get('/home', function (req, res) {
+  res.render('home');
+})
+
 module.exports = router;

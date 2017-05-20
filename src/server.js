@@ -11,9 +11,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(handleBodyParseError)
 
-app.use(recordInfo);
+app.use(log_request);
 
-var options = { setHeaders: deliverXHTML_static };
+var options = { setHeaders: deliverXHTML_static, index: "landing.html" };
 app.use(express.static(path.resolve(__dirname, 'public'), options));
 
 app.set('view engine', 'ejs')
@@ -28,7 +28,7 @@ app.use('/teams', APIs.teams);
 
 var port = 8080;
 
-var address = fs.readFileSync(path.resolve(__dirname, 'ipaddress.txt'), {encoding: 'utf-8'})//"192.168.0.12"//"localhost"
+var address = fs.readFileSync(path.resolve(__dirname, 'ipaddress.txt'), {encoding: 'utf-8'})
 app.listen(port, address);
 
 console.log("visit...");
@@ -51,7 +51,7 @@ function handleBodyParseError(error, req, res, next){
         next ();
 }
 
-function recordInfo(req, res, next) {
-    fs.appendFileSync(path.resolve(__dirname, '../reqs.log'), "time: " + Date() + ", url: "+ req.url +", ip: " + req.ip + ", agent: "+req.headers['user-agent'] + "\n"); 
+function log_request(req, res, next) {
+    fs.appendFileSync(path.resolve(__dirname, '../reqs.log'), "time: " + Date() + ", url: "+ req.url +", ip: " + req.ip + ", agent: "+req.headers['user-agent'] + "\n");
     next();
 }
