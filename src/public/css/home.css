@@ -16,6 +16,13 @@ li:hover {
   background-color: #0000bb;
 }
 
+img {
+  display: block;
+  height: 4em;
+  float: right;
+  margin-top: 3em;
+}
+
 @media (min-width: 30em) {
   li {
     width: 26em;
