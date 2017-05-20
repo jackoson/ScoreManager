@@ -4,6 +4,8 @@ var path = require("path");
 var APIs = require("./DataAPIs/APIController");
 var templateManager = require('./TemplateManager');
 var express = require('express');
+var https = require('https');
+var http = require('http');
 var app = express();
 
 var bodyParser = require('body-parser');
@@ -26,13 +28,16 @@ app.use('/matches', APIs.matches);
 app.use('/competitions', APIs.competitions);
 app.use('/teams', APIs.teams);
 
-var port = 8080;
-
 var address = fs.readFileSync(path.resolve(__dirname, 'ipaddress.txt'), {encoding: 'utf-8'})
-app.listen(port, address);
 
-console.log("visit...");
-console.log(address+":"+port);
+var options = {
+    key  : fs.readFileSync(path.resolve(__dirname, 'ssl/key.pem')),
+    ca   : fs.readFileSync(path.resolve(__dirname, 'ssl/csr.pem')),
+    cert : fs.readFileSync(path.resolve(__dirname, 'ssl/cert.pem'))
+}
+
+http.createServer(app).listen(80, () => {console.log("http running")});
+https.createServer(options, app).listen(443, () => {console.log("https running")});
 
 function deliverXHTML_static(res, path, stat) {
     if (path.endsWith(".html"))
