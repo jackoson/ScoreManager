@@ -51,7 +51,7 @@ function addTeams() {
         function four() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; five()}) }
         function five() {api.addTeamPlayer(player2ID, teamID, addMatches);}
     }
-    
+
 }
 
 function addMatches() {
@@ -62,14 +62,14 @@ function addMatches() {
         var player1ID, player2ID;
         function one() {APIs.players.getByName("sam", (err, players)=>{player1ID = players[0].ID; two()}) }
         function two() {APIs.players.getByName("ian", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {api.add(1, 'mens singles', '1996-03-16 09:00:00',[{"setsWon":3, "teamID": 1, "players": [player1ID]}, {"setsWon":2, "teamID": 2, "players": [player2ID]}], b);} 
+        function three() {api.add(1, 'mens singles', '1996-03-16 09:00:00',[{"setsWon":3, "teamID": 1, "players": [player1ID]}, {"setsWon":2, "teamID": 2, "players": [player2ID]}], b);}
     }
     function b(err, matchID) {
         one();
         var player1ID, player2ID;
         function one() {APIs.players.getByName("lesley", (err, players)=>{player1ID = players[0].ID; two()}) }
         function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {api.add(1, 'womens singles', '1998-06-18 09:00:00',[{"setsWon":1, "teamID": 1, "players": [player1ID]}, {"setsWon":2, "teamID": 2, "players": [player2ID]}], c);} 
+        function three() {api.add(1, 'womens singles', '1998-06-18 09:00:00',[{"setsWon":1, "teamID": 1, "players": [player1ID]}, {"setsWon":2, "teamID": 2, "players": [player2ID]}], c);}
     }
     function c() {
         one();
@@ -78,17 +78,26 @@ function addMatches() {
         function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
         function three() {APIs.players.getByName("sam", (err, players)=>{player3ID = players[0].ID; four()}) }
         function four() {APIs.players.getByName("ian", (err, players)=>{player4ID = players[0].ID; five()}) }
-        function five() {api.add(1, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [player1ID, player2ID]}, {"setsWon":1, "players": [player3ID, player4ID]}], addCompetitions );} 
+        function five() {api.add(1, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [player1ID, player2ID]}, {"setsWon":1, "players": [player3ID, player4ID]}], addCompetitions );}
     }
+}
 
-    function addCompetitions() {
+function addCompetitions() {
     var api = APIs.competitions;
     a();
     function a() {
         one();
         function one() { api.add("davis cup", two) }
-        function two() { api.add("easter box tennis", ()=>{console.log("Seeded");}) }
+        function two() { api.add("easter box tennis", addUsers) }
     }
 }
 
+function addUsers() {
+    var api = APIs.users;
+    a();
+    function a() {
+        one();
+        function one() { api.add({name: "admin", password: "bigblue"}, two) }
+        function two() { api.add({name: "sam", password: "beautiful"}, ()=>{console.log("Seeded");}) }
+    }
 }

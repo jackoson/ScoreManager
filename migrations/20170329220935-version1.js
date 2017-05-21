@@ -101,12 +101,21 @@ exports.up = function(db, callback) {
         teamID : { type: 'int', notNull: true },
         opponentID : { type: 'int', notNull: true }
       },
+      users
+    );
+  }
+  function users() {
+    db.createTable('users',
+      {
+        ID : { type: 'int', notNull: true, primaryKey: true },
+        name : { type: 'string', notNull: true },
+        passwordHash : { type: 'string', notNull: true },
+        passwordSalt : { type: 'string', notNull: true }
+      },
       callback
     );
   }
 };
-
-
 
 exports.down = function(db, callback) {
   players();
@@ -118,7 +127,8 @@ exports.down = function(db, callback) {
   function competitions() { db.dropTable('competitions', teams); }
   function teams() { db.dropTable('teams', teamplayers); }
   function teamplayers() { db.dropTable('teamplayers', teamplays); }
-  function teamplays() { db.dropTable('teamplays', callback); }
+  function teamplays() { db.dropTable('teamplays', users); }
+  function users() { db.dropTable('users', callback); }
 };
 
 exports._meta = {
