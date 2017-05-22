@@ -98,6 +98,19 @@ function addUsers() {
     function a() {
         one();
         function one() { api.add({name: "admin", password: "bigblue"}, two) }
-        function two() { api.add({name: "sam", password: "beautiful"}, ()=>{console.log("Seeded");}) }
+        function two() { api.add({name: "sam", password: "beautiful"}, addSessions) }
+    }
+}
+
+function addSessions() {
+    var api = APIs.sessions;
+    a();
+    function a() {
+        one();
+        var player1ID, player2ID;
+        function one() {APIs.players.getByName("lesley", (err, players)=>{player1ID = players[0].ID; two()}) }
+        function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
+        function three() { api.add(player1ID, four) }
+        function four() { api.add(player2ID, ()=>{console.log("Seeded");}) }
     }
 }

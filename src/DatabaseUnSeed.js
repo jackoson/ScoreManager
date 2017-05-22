@@ -17,7 +17,15 @@ function unseed(callback) {
     }
 
     function removeCompetitions() {
-        APIs.competitions.deleteAll( () => { console.log("Unseeded"); callback(); });
+        APIs.competitions.deleteAll(removeUsers);
+    }
+
+    function removeUsers() {
+        APIs.users.deleteAll(removeSessions);
+    }
+
+    function removeSessions() {
+        APIs.sessions.deleteAll( () => { console.log("Unseeded"); callback(); });
     }
 
 }

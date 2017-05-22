@@ -112,6 +112,15 @@ exports.up = function(db, callback) {
         passwordHash : { type: 'string', notNull: true },
         passwordSalt : { type: 'string', notNull: true }
       },
+      sessions
+    );
+  }
+  function sessions() {
+    db.createTable('sessions',
+      {
+        ID : { type: 'string', notNull: true, primaryKey: true },
+        userID : { type: 'int', notNull: false },
+      },
       callback
     );
   }
@@ -128,7 +137,8 @@ exports.down = function(db, callback) {
   function teams() { db.dropTable('teams', teamplayers); }
   function teamplayers() { db.dropTable('teamplayers', teamplays); }
   function teamplays() { db.dropTable('teamplays', users); }
-  function users() { db.dropTable('users', callback); }
+  function users() { db.dropTable('users', sessions); }
+  function sessions() { db.dropTable('sessions', callback); }
 };
 
 exports._meta = {

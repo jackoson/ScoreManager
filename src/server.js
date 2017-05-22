@@ -5,6 +5,9 @@ var express = require('express');
 var https = require('https');
 var http = require('http');
 var app = express();
+var APIs = require("./DataAPIs/APIController");
+var templateManager = require('./TemplateManager');
+var sessions = require('./DataAPIs/DatabaseProviders/SessionDataProvider')
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -16,18 +19,9 @@ app.use(cookieParser())
 
 app.use(log_request);
 
-var APIs = require("./DataAPIs/APIController");
-var templateManager = require('./TemplateManager');
+app.use(handle_session);
 
-app.get('/', function(req, res) {
-  if(req.cookies.visited != null && req.cookies.visited == "true") {
-    res.cookie("visited", "true", {expires: new Date(new Date().setFullYear(new Date().getFullYear() + 10))});
-    res.redirect("/templates/home/");
-  } else {
-    res.cookie("visited", "true", {expires: new Date(new Date().setFullYear(new Date().getFullYear() + 10))});
-    res.sendFile(path.resolve(__dirname, "public/landing.html"));
-  }
-})
+app.get('/', landing_page_redirect);
 
 var options = { setHeaders: deliverXHTML_static, index: "landing.html" };
 app.use(express.static(path.resolve(__dirname, 'public'), options));
@@ -73,4 +67,36 @@ function handleBodyParseError(error, req, res, next){
 function log_request(req, res, next) {
     fs.appendFileSync(path.resolve(__dirname, '../reqs.log'), "time: " + Date() + ", url: "+ req.url +", ip: " + req.ip + ", agent: "+req.headers['user-agent'] + "\n");
     next();
+}
+
+function landing_page_redirect(req, res) {
+  if(req.cookies.visited != null && req.cookies.visited == "true") {
+    res.cookie("visited", "true", {expires: new Date(new Date().setFullYear(new Date().getFullYear() + 10))});
+    res.redirect("/templates/home/");
+  } else {
+    res.cookie("visited", "true", {expires: new Date(new Date().setFullYear(new Date().getFullYear() + 10))});
+    res.sendFile(path.resolve(__dirname, "public/landing.html"));
+  }
+}
+
+
+function handle_session(req, res, next) {
+    if(req.cookies.session == null) {
+        sessions.add(null, setCookie);
+    } else {
+        sessions.getByID(req.cookies.session, addUser);
+    }
+    function addUser(err, data) {
+        if( err != null) {
+            sessions.add(null, setCookie);
+        } else {
+            req.logged_in = true;
+            req.logged_in_user = data.userID;
+            next();
+        }
+    }
+    function setCookie(err, id) {
+        res.cookie("session",id);
+        next();
+    }
 }
