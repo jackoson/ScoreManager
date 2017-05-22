@@ -79,7 +79,6 @@ function landing_page_redirect(req, res) {
   }
 }
 
-
 function handle_session(req, res, next) {
     if(req.cookies.session == null) {
         sessions.add(null, setCookie);
@@ -89,9 +88,11 @@ function handle_session(req, res, next) {
     function addUser(err, data) {
         if( err != null) {
             sessions.add(null, setCookie);
-        } else {
+        } else if(data.userID != null) {
             req.logged_in = true;
             req.logged_in_user = data.userID;
+            next();
+        } else {
             next();
         }
     }
