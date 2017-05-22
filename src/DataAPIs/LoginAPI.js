@@ -10,11 +10,9 @@ router.post('/', function (req, res) {
     res.status(403).send("Need username and password.");
   } else {
     userAPI.Authenticate(req.body.username, req.body.password, callback);
-    function callback(authenticated) {
+    function callback(authenticated, userid) {
       if(authenticated) {
-        //add to session
-
-        res.send("Login Successful");
+        sessionsAPI.addSessionUser(req.sessionid, userid, () => {res.send("Login Successful");});
       } else {
         res.status(403).send("Invalid Username/Password.");
       }

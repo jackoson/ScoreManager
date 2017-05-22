@@ -28,7 +28,7 @@ function AuthenticateUser(username, password, callback) {
       hashfunction.update(password);
       hashfunction.update(data.passwordSalt);
       if(data.passwordHash == hashfunction.digest('hex')) {
-        callback(true);
+        callback(true, data.ID);
       } else {
         callback(false);
       }

@@ -91,14 +91,17 @@ function handle_session(req, res, next) {
         if( err != null || data == null) {
             sessions.add(null, setCookie);
         } else if(data.userID != null) {
+            req.sessionid = req.cookies.session;
             req.logged_in = true;
             req.logged_in_user = data.userID;
             next();
         } else {
+            req.sessionid = req.cookies.session;
             next();
         }
     }
     function setCookie(err, id) {
+        req.sessionid = req.cookies.session;
         res.cookie("session",id);
         res.cookie("session_timeout","true", {expires: new Date(Date.now() + 86400000 /*One day*/ )});
         next();

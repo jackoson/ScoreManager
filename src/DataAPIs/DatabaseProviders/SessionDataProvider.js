@@ -39,6 +39,11 @@ function addSession(userID, callback) {
     }
 }
 
+function addSessionUser(sessionid, userid, callback) {
+  var db = openDatabase();
+  db.get('update sessions set userID = $userid where ID = $sessionid', {$sessionid: sessionid, $userid: userid}, function(err) { db.close(); callback(err); });
+}
+
 function deleteSession(id, callback) {
     var db = openDatabase();
     db.run('delete from sessions where ID = $ID', {$ID: id}, function(err) { db.close(); callback(err); });
@@ -59,5 +64,6 @@ module.exports = {
   getByID : getSessionByID,
   add : addSession,
   deleteByID : deleteSession,
-  deleteAll : deleteAllSessions
+  deleteAll : deleteAllSessions,
+  addSessionUser : addSessionUser
 }
