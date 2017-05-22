@@ -120,6 +120,7 @@ exports.up = function(db, callback) {
       {
         ID : { type: 'string', notNull: true, primaryKey: true },
         userID : { type: 'int', notNull: false },
+        created : { type: 'datetime' }
       },
       callback
     );

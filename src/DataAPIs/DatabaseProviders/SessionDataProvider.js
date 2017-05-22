@@ -23,8 +23,8 @@ function addSession(userID, callback) {
     function checkIfUsed(err, buff) {
         sessionID = buff.toString('hex');
         db.run(
-            'insert into sessions (ID, userID) values ($id, $user)',
-            {$id: sessionID, $user: userID},
+            'insert into sessions (ID, userID, created) values ($id, $user, $datetime)',
+            {$id: sessionID, $user: userID, $datetime: new Date().getTime()},
             checkCallback
         );
     }
@@ -46,6 +46,11 @@ function deleteSession(id, callback) {
 function deleteAllSessions(callback) {
     var db = openDatabase();
     db.run('delete from sessions', function(err) { db.close(); callback(err); });
+}
+
+function deleteOldSessions(time) {
+    var db = openDatabase();
+    db.run('delete from sessions where created <= $time', {$time: time}, function(err) { db.close(); });
 }
 
 module.exports = {

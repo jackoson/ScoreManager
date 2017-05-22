@@ -80,7 +80,7 @@ function landing_page_redirect(req, res) {
 }
 
 function handle_session(req, res, next) {
-    if(req.cookies.session == null) {
+    if(req.cookies.session == null || req.cookies.session_timeout == null) {
         sessions.add(null, setCookie);
     } else {
         sessions.getByID(req.cookies.session, addUser);
@@ -98,6 +98,12 @@ function handle_session(req, res, next) {
     }
     function setCookie(err, id) {
         res.cookie("session",id);
+        res.cookie("session_timeout","true", {expires: new Date(Date.now() + 86400000 /*One day*/ )});
         next();
     }
+}
+
+setInterval(clearOldSessions, 600000 /*Every ten minutes*/ );
+function clearOldSessions() {
+    sessions.deleteOldSessions(new Date().now() - 86400000);
 }
