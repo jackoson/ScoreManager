@@ -7,7 +7,8 @@ var http = require('http');
 var app = express();
 var APIs = require("./DataAPIs/APIController");
 var templateManager = require('./TemplateManager');
-var sessions = require('./DataAPIs/DatabaseProviders/SessionDataProvider')
+var sessions = require('./DataAPIs/DatabaseProviders/DataProviderController').sessions;
+var users = require('./DataAPIs/DatabaseProviders/DataProviderController').users;
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -93,8 +94,13 @@ function handle_session(req, res, next) {
         } else if(data.userID != null) {
             req.sessionid = req.cookies.session;
             req.logged_in = true;
-            req.logged_in_user = data.userID;
-            next();
+            req.logged_in_user = {id: data.userID};
+            users.getByID(data.userID, setUser);
+            function setUser(err, data) {
+              if(err != null || data == null) throw Exception("User does not exist");
+                req.logged_in_user.username = data.username;
+                next();
+            }
         } else {
             req.sessionid = req.cookies.session;
             next();

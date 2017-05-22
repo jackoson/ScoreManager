@@ -5,7 +5,7 @@ var userAPI = require('./DatabaseProviders/DataProviderController').users;
 var sessionsAPI = require('./DatabaseProviders/DataProviderController').sessions;
 var crypto = require('crypto');
 
-router.post('/', function (req, res) {
+router.post('/login', function (req, res) {
   if(req.body.username == null || req.body.password == null) {
     res.status(403).send("Need username and password.");
   } else {
@@ -20,4 +20,7 @@ router.post('/', function (req, res) {
   }
 });
 
+router.post('/logout', function (req, res) {
+  sessionsAPI.removeSessionUser(req.sessionid, () => {res.send("Logout Successful");});
+});
 module.exports = router

@@ -46,7 +46,9 @@ div#logout_modal {
   border: 0em;
 }
 
-
+em {
+  font-style: italic;
+}
 
 nav#navBar {
   background-color: #56A3A6;

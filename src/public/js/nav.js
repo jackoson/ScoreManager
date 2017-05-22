@@ -6,6 +6,7 @@ function initialise() {
   document.addEventListener('click', handler);
 
   document.getElementById("login-form").onsubmit = postForm;
+  document.getElementById("logout_button").addEventListener('click', logout);
 
   function handler(event){
     if( modal_showing == true && !event.target.className.includes('model-item') ) {
@@ -36,10 +37,24 @@ function postForm() {
       location.reload();
     }
   }
-  req.open("POST", "/login", true);
+  req.open("POST", "/login/login", true);
   req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   var username = document.getElementById("username-input").value;
   var password = document.getElementById("password-input").value;
   req.send("username=" + username + "&password=" + password);
   return false;
+}
+
+function logout() {
+  var req = new XMLHttpRequest();
+  req.onreadystatechange = receive;
+  function receive() {
+    if (this.readyState != XMLHttpRequest.DONE)
+      return;
+    if(this.status == 200) {
+      location.reload();
+    }
+  }
+  req.open("POST", "/login/logout", true);
+  req.send();
 }

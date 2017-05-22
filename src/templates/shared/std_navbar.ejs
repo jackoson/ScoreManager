@@ -6,8 +6,8 @@
   <a href="/templates/teams" ><div class="navItem navLink" >Teams</div></a>
   <a href="/templates/competitions" ><div class="navItem navLink" >Competitions</div></a>
   <div id="signin" class="navItem signin">
-    <% if (logged_in) { %>
-      Logged in
+    <% if (login.logged_in) { %>
+      Logged in as <em><%= login.user.username %></em>
       <input type="hidden" id="logged_in" value="true" />
     <% } else { %>
       Viewing Access Only
@@ -30,9 +30,12 @@
 
 <div id="logout_modal" class="modal-background">
   <div class="modal model-item">
-    Edit Mode Enabled<br/>
-    <div id="logout_button" class="modal-button model-item">
-      <a class="model-item">Log out</a>
-    </div>
+    <% if (login.logged_in) { %>
+      <h2>Logged in as <em><%= login.user.username %></em></h2>
+    <% } else { %>
+      <p>Not logged in</p>
+    <% } %>
+    <p>Edit Mode Enabled</p>
+    <input type="button" id="logout_button" class="model-item modal-button" value="Log out" />
   </div>
 </div>

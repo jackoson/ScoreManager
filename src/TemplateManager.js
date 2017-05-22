@@ -8,40 +8,46 @@ var api = require('./DataAPIs/DatabaseProviders/DataProviderController');
 router.get('/players/id/:id', function (req, res) {
   api.players.getByID(req.params.id, (err, data) => {
     if( err != null ) {res.send(err);}
-    res.render('player', {player: data, logged_in: req.logged_in != null});
+    var login_info = {logged_in: req.logged_in != null, user: req.logged_in_user};
+    res.render('player', {player: data, login: login_info});
   })
 })
 
 router.get('/players', function (req, res) {
   api.players.getAll((err, data) => {
     if( err != null ) {res.send(err);}
-    res.render('players', {players: data, logged_in: req.logged_in != null});
+    var login_info = {logged_in: req.logged_in != null, user: req.logged_in_user};
+    res.render('players', {players: data, login: login_info});
   })
 })
 
 router.get('/matches', function (req, res) {
   api.matches.getAll((err, data) => {
     if( err != null ) {res.send(err);}
-    res.render('matches', {matches: data, logged_in: req.logged_in != null});
+    var login_info = {logged_in: req.logged_in != null, user: req.logged_in_user};
+    res.render('matches', {matches: data, login: login_info});
   })
 })
 
 router.get('/teams', function (req, res) {
   api.teams.getAll((err, data) => {
     if( err != null ) {res.send(err);}
-    res.render('teams', {teams: data, logged_in: req.logged_in != null});
+    var login_info = {logged_in: req.logged_in != null, user: req.logged_in_user};
+    res.render('teams', {teams: data, login: login_info});
   })
 })
 
 router.get('/competitions', function (req, res) {
   api.competitions.getAll((err, data) => {
     if( err != null ) {res.send(err);}
-    res.render('competitions', {competitions: data, logged_in: req.logged_in != null});
+    var login_info = {logged_in: req.logged_in != null, user: req.logged_in_user};
+    res.render('competitions', {competitions: data, login: login_info});
   })
 })
 
 router.get('/home', function (req, res) {
-  res.render('home', { logged_in: req.logged_in != null });
+  var login_info = {logged_in: req.logged_in != null, user: req.logged_in_user};
+  res.render('home', { login: login_info });
 })
 
 module.exports = router;
