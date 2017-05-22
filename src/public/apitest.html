@@ -9,14 +9,14 @@
 <body>
   addr:<br/>
   <!--<input type="text" id="url" size="100" value="http://localhost:8080/"></input><br/>-->
-  <input type="text" id="url" size="100" value="http://192.168.0.12:8080/"></input><br/>
+  <input type="text" id="url" size="100" value="http://localhost/players/"></input><br/>
   data:<br/>
   <textarea id="xmldata" cols="100" rows="5"></textarea><br/>
   <input type="button" value="get" id="get" />
   <input type="button" value="post" id="post" />
   <input type="button" value="delete" id="del" />
   <div id="output"></div>
-  
+
   <script>
     document.getElementById("get").addEventListener('click', get);
     document.getElementById("post").addEventListener('click', post);

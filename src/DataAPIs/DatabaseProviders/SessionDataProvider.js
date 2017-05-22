@@ -1,6 +1,6 @@
 "use strict"
 
-var cryto = require('crypto');
+var crypto = require('crypto');
 var openDatabase = require("./DatabaseConnector").openDatabase;
 
 function getAllSessions(callback) {
@@ -18,9 +18,10 @@ function addSession(userID, callback) {
     var sessionID;
     tryInsert();
     function tryInsert() {
-        cryto.randomBytes(16, checkIfUsed);
+        crypto.randomBytes(32, checkIfUsed);
     }
     function checkIfUsed(err, buff) {
+        if(err != null) throw Exception("No randomness");
         sessionID = buff.toString('hex');
         db.run(
             'insert into sessions (ID, userID, created) values ($id, $user, $datetime)',

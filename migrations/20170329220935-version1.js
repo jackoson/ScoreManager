@@ -108,7 +108,7 @@ exports.up = function(db, callback) {
     db.createTable('users',
       {
         ID : { type: 'int', notNull: true, primaryKey: true },
-        name : { type: 'string', notNull: true },
+        username : { type: 'string', notNull: true },
         passwordHash : { type: 'string', notNull: true },
         passwordSalt : { type: 'string', notNull: true }
       },

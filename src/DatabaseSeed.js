@@ -97,8 +97,8 @@ function addUsers() {
     a();
     function a() {
         one();
-        function one() { api.add({name: "admin", password: "bigblue"}, two) }
-        function two() { api.add({name: "sam", password: "beautiful"}, addSessions) }
+        function one() { api.add({username: "admin", password: "bigblue"}, two) }
+        function two() { api.add({username: "sam", password: "beautiful"}, addSessions) }
     }
 }
 

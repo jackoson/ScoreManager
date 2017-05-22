@@ -19,10 +19,11 @@
 <div id="login_modal" class="modal-background">
   <div class="modal model-item">
     Log in to enable editting<br/>
-    <form class="model-item" action="/templates/home" method="post">
-        <input type="text" placeholder="Username" class="model-item login-textbox" id="username-input" name="username"/>
-        <input type="password" placeholder="Password" class="model-item login-textbox" name="password"/>
-        <input type="submit" id="login_button" class="modal-button model-item" value="Login"/>
+    <form class="model-item" id="login-form" >
+        <input type="text" placeholder="Username" class="model-item login-textbox" id="username-input" name="username" value="admin"/>
+        <input type="password" placeholder="Password" class="model-item login-textbox" id="password-input" name="password" value="bigblue"/>
+        <p id="error-message"></p>
+        <input type="submit" id="login_button" class="model-item modal-button" value="Login" />
     </form>
   </div>
 </div>

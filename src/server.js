@@ -36,6 +36,8 @@ app.use('/matches', APIs.matches);
 app.use('/competitions', APIs.competitions);
 app.use('/teams', APIs.teams);
 
+app.use('/login', APIs.login);
+
 var address = fs.readFileSync(path.resolve(__dirname, 'ipaddress.txt'), {encoding: 'utf-8'})
 
 var options = {
@@ -86,7 +88,7 @@ function handle_session(req, res, next) {
         sessions.getByID(req.cookies.session, addUser);
     }
     function addUser(err, data) {
-        if( err != null) {
+        if( err != null || data == null) {
             sessions.add(null, setCookie);
         } else if(data.userID != null) {
             req.logged_in = true;
@@ -105,5 +107,5 @@ function handle_session(req, res, next) {
 
 setInterval(clearOldSessions, 600000 /*Every ten minutes*/ );
 function clearOldSessions() {
-    sessions.deleteOldSessions(new Date().now() - 86400000);
+    sessions.deleteOldSessions(new Date(Date.now() - 86400000));
 }
