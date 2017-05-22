@@ -23,6 +23,12 @@ div.modal {
   transform: translate(-50%, -50%);
 }
 
+.login-textbox {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+}
+
 div#login_modal {
   display: none;
 }
@@ -31,11 +37,13 @@ div#logout_modal {
   display: none;
 }
 
-div.modal-button {
+.modal-button {
+  display: block;
   padding: 0.5em;
   text-align: center;
   background-color: #3b8d90;
-  cursor: pointer;
+  width: 100%;
+  border: 0em;
 }
 
 

@@ -18,10 +18,12 @@
 
 <div id="login_modal" class="modal-background">
   <div class="modal model-item">
-    Edit Mode Disabled<br/>
-    <div id="login_button" class="modal-button model-item">
-      <a class="model-item">Log in</a>
-    </div>
+    Log in to enable editting<br/>
+    <form class="model-item" action="/templates/home" method="post">
+        <input type="text" placeholder="Username" class="model-item login-textbox" id="username-input" name="username"/>
+        <input type="password" placeholder="Password" class="model-item login-textbox" name="password"/>
+        <input type="submit" id="login_button" class="modal-button model-item" value="Login"/>
+    </form>
   </div>
 </div>
 
