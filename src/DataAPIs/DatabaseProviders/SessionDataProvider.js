@@ -70,6 +70,7 @@ module.exports = {
   add : addSession,
   deleteByID : deleteSession,
   deleteAll : deleteAllSessions,
+  deleteOldSessions : deleteOldSessions,
   addSessionUser : addSessionUser,
   removeSessionUser : removeSessionUser
 }
