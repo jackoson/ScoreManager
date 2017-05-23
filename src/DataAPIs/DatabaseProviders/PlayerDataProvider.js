@@ -21,7 +21,7 @@ function getPlayerByID(ID, callback){
   db.get('SELECT players.ID, players.name, players.sex FROM players where ID = $value', {$value: ID}, getPlayer );
   function getPlayer(err, player_basic) {
     if(err != null) { callback(err); return; }
-    if(player_basic == null) { callback(err, {}); return; }
+    if(player_basic == null) { callback("Player does not exist."); return; }
     var player = player_basic;
     db.all(`select matches.ID, matches.datetime, matches.type from matchplayers
             JOIN opponents ON opponents.ID = matchplayers.opponentID

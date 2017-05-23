@@ -7,6 +7,9 @@
 </head>
 <body>
   <% include shared/std_navbar %>
+  <% if(player == null) { %>
+  <h1>Player Not Found</h1>
+  <% } else { %>
   <h1><%= player.name %> ( <%= player.sex %> ) </h1>
   <div id="tournements" class="infoTable" >
     <h2>Tournements</h2>
@@ -18,7 +21,7 @@
     <% player.tournements.forEach(function(tournement){ %>
     <tr>
       <td> <%= tournement.name %> </td>
-    </tr>  
+    </tr>
     <% }) %>
     </table>
   </div>
@@ -28,7 +31,7 @@
     <% player.matches.forEach( function(match) { %>
 
   <div class="match" >
-  
+
     <div class="matchData matchDate">
       <div class="heading" >Date</div>
       <div class="value" ><%= match.datetime %></div>
@@ -68,7 +71,7 @@
 
   <% }); %>
   </div>
-
+  <% } %>
   <div class="clear" ></div>
 
 </body>

@@ -1,0 +1,7 @@
+
+@media (min-width: 30em) {
+  #container {
+    width: 40em;
+    margin: auto;
+  }
+}
