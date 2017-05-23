@@ -22,30 +22,33 @@ router.get('/sex/:sex', function (req, res) {
 
 router.use('/add', function(req, res, next) {
   if(req.body.name == undefined) {
-    res.send("Name not specified.");
+    res.status(400).send("Name not specified.");
   }
   else if (req.body.name.includes(":")) {
-    res.send("The symbol ':' is not allowed in names.");
+    res.status(400).send("The symbol ':' is not allowed in names.");
   }
   else if (req.body.name == null || req.body.sex == null) {
-    res.send("ERROR: Need both name and sex to add player.");
+    res.status(400).send("Need both name and sex to add player.");
   }
   else if (!(req.body.sex == provider.male || req.body.sex == provider.female || req.body.sex == provider.other)) {
-    res.send("ERROR: Not valid sex.");
+    res.status(400).send("Not valid sex.");
+  }
+  else if (req.body.name == "") {
+    res.status(400).send("Cannot have empty name.");
   }
   else {
     next();
   }
 })
-router.post('/add', function (req, res) { 
+router.post('/add', function (req, res) {
   provider.add(req.body.name, req.body.sex, function(err, id){
-    if (err == null) { res.send(id.toString()); } else { res.send(err); };
+    if (err == null) { res.send(id.toString()); } else { res.status(400).send(err); };
   });
 })
 
 router.delete('/id/:id', function (req, res) {
   provider.deleteByID(req.params.id, function(err){
-    if (err == null) {res.send("success");} else {res.send(err);}; 
+    if (err == null) {res.send("success");} else {res.status(400).send(err);};
   });
 })
 

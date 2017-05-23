@@ -29,7 +29,7 @@ function getPlayerByID(ID, callback){
             where matchplayers.playerID = $ID`, {$ID: player.ID}, getMatches);
     function getMatches(err, matches_basic) {
       if(err != null) { callback(err); return; }
-      if(matches_basic.length == 0) { callback(err, []); return; }
+      if(matches_basic.length == 0) { player.matches = []; request_tournements(); return; }
       var matches_with_opponents = [];
       var next_match = matches_basic.pop();
       if(matches_basic.length > 0)
@@ -62,12 +62,7 @@ function getPlayerByID(ID, callback){
             matches_with_opponents.push(match);
             if(lastMatch) {
               player.matches = matches_with_opponents;
-              db.all(`select competitions.ID, competitions.name from matchplayers
-                      JOIN opponents ON opponents.ID = matchplayers.opponentID
-                      JOIN matches ON matches.ID = opponents.matchID
-                      JOIN rubbers ON rubbers.ID = matches.rubberID
-                      JOIN competitions ON competitions.ID = rubbers.competitionID
-                      where matchplayers.playerID = $ID`, {$ID: ID}, getTournements);
+              request_tournements();
               return;
             }
             var next_match = matches_basic.pop();
@@ -89,9 +84,17 @@ function getPlayerByID(ID, callback){
         }
       }
     }
+    function request_tournements() {
+      db.all(`select competitions.ID, competitions.name from matchplayers
+              JOIN opponents ON opponents.ID = matchplayers.opponentID
+              JOIN matches ON matches.ID = opponents.matchID
+              JOIN rubbers ON rubbers.ID = matches.rubberID
+              JOIN competitions ON competitions.ID = rubbers.competitionID
+              where matchplayers.playerID = $ID`, {$ID: ID}, getTournements);
+    }
     function getTournements(err, tournements) {
-      if(err != null) { console.log("hi"); callback(err); return; }
-      player.tournements = tournements;     
+      if(err != null) { callback(err); return; }
+      player.tournements = tournements;
       callback(err, player);
     }
   }
@@ -116,21 +119,21 @@ function getPlayersBySex(sex, callback) {
 
 function addPlayer(name, sex, callback) {
   var db = openDatabase();
-  db.run('insert into players (name, sex) values ($name, $sex)', {$name: name, $sex: sex}, 
+  db.run('insert into players (name, sex) values ($name, $sex)', {$name: name, $sex: sex},
     function(err) { db.close(); callback(err, this.lastID); }
   );
 }
 
 function deletePlayer(ID, callback) {
   var db = openDatabase();
-  db.run('delete from players where ID = $id', {$id: ID}, 
+  db.run('delete from players where ID = $id', {$id: ID},
     function(err) { db.close(); callback(err); }
   );
 }
 
 function deleteAllPlayers(callback) {
   var db = openDatabase();
-  db.run('delete from players', 
+  db.run('delete from players',
     function(err) { db.close(); callback(err); }
   );
 }
