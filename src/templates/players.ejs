@@ -4,6 +4,9 @@
 <head>
   <% include shared/std_header %>
   <link rel="stylesheet" href="/css/players.css" />
+  <% if(login.logged_in) { %>
+  <script src="/js/players.js" />
+  <% } %>
 </head>
 <body>
   <% include shared/std_navbar %>
@@ -21,6 +24,20 @@
     </tr>
     <% }); %>
     </table>
+    <% if(login.logged_in) { %>
+      <button id="addplayer-button">
+        <div id="addplayer-button-image"></div>
+      </button>
+      <input type="text" placeholder="Name" id="name_input" class="hide-elements"/>
+      <select id="sex_select" class="hide-elements">
+        <option value="f">female</option>
+        <option value="m">male</option>
+        <option value="o">other</option>
+      </select>
+      <button id="confirm_button" class="hide-elements">
+        <div id="confirm_button_image"></div>
+      </button>
+    <% } %>
   </div>
 </body>
 </html>

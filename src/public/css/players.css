@@ -1,4 +1,70 @@
 
+#addplayer-button {
+  vertical-align: middle;
+  width: 3em;
+  height: 3em;
+  background-color: rgba(0,0,0,0);
+  border: 0px;
+  position: absolute;
+  display: inline-block;
+}
+
+#addplayer-button-image {
+  width: 2em;
+  height: 2em;
+  margin: auto;
+  background-image: url("/images/plus.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+#confirm_button {
+  vertical-align: middle;
+  width: 3em;
+  height: 3em;
+  background-color: rgba(0,0,0,0);
+  border: 0px;
+}
+
+#confirm_button_image {
+  width: 2em;
+  height: 2em;
+  margin: auto;
+  background-image: url("/images/tick.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+#name_input {
+  padding: 0.4em;
+  vertical-align: middle;
+}
+
+#sex_select {
+  padding: 0.4em;
+  vertical-align: middle;
+}
+
+@media (min-width: 25em) {
+  .show-elements {
+    display: inline-block;
+  }
+  #confirm_button {
+    margin-left: 4em;
+  }
+}
+
+@media (max-width: 25em) {
+  .show-elements {
+    display: block;
+    margin: 0.5em;
+  }
+}
+
+.hide-elements {
+  display: none;
+}
+
 tr:nth-child(1) {
   font-weight: bold;
 }
@@ -27,10 +93,155 @@ td {
     padding-right: 10em;
     min-width: 10em;
   }
+  #name_input {
+    padding-right: 10em;
+    min-width: 10em;
+  }
 }
 
 @media (max-width: 30em) {
   td:nth-child(1) {
     padding-right: 2em;
   }
+  #name_input {
+    padding-right: 2em;
+  }
 }
+
+
+/*Animations*/
+
+.cross-right-animation {
+  animation-name: cross-right;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+}
+
+@media (min-width: 30em) {
+  @keyframes cross-right {
+    from {
+      transform: translate(0em);
+    }
+    to {
+      transform: translate(30em);
+    }
+  }
+}
+
+@media (min-width: 25em) and (max-width: 30em){
+  @keyframes cross-right {
+    from {
+      transform: translate(0em);
+    }
+    to {
+      transform: translate(23em);
+    }
+  }
+}
+
+@media (max-width: 25em) {
+  @keyframes cross-right {
+    from {
+      transform: translate(0em);
+    }
+    to {
+      transform: translate(16em);
+    }
+  }
+}
+
+.cross-clockwise-animation {
+  animation-name: cross-clockwise;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cross-clockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(45deg);
+  }
+}
+
+.cross-left-animation {
+  animation-name: cross-left;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+}
+@media (min-width: 30em) {
+  @keyframes cross-left {
+    from {
+      transform: translate(30em);
+    }
+    to {
+      transform: translate(0em);
+    }
+  }
+}
+
+@media (min-width: 25em) and (max-width: 30em){
+  @keyframes cross-left {
+    from {
+      transform: translate(23em);
+    }
+    to {
+      transform: translate(0em);
+    }
+  }
+}
+
+@media (max-width: 25em) {
+  @keyframes cross-left {
+    from {
+      transform: translate(16em);
+    }
+    to {
+      transform: translate(0em);
+    }
+  }
+}
+
+.cross-anti-clockwise-animation {
+  animation-name: cross-anti-clockwise;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cross-anti-clockwise {
+  from {
+    transform: rotate(45deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.fade-in-animation {
+  animation-name: fade-in;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade-in { from { opacity:0; } to { opacity:1; } }
+
+.fade-out-animation {
+  animation-name: fade-out;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade-out { from { opacity:1; } to { opacity:0; } }
