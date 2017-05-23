@@ -83,3 +83,9 @@ nav#navBar div#navBarTitle{
     float: none;
   }
 }
+
+@media (max-width: 30em) {
+  nav#navBar div.navItem {
+    display: block;
+  }
+}

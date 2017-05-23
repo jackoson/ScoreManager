@@ -3,6 +3,34 @@ tr:nth-child(1) {
   font-weight: bold;
 }
 
-td:nth-child(1) {
-  width: 10em;
+td {
+  padding-bottom: 1em;
+}
+
+@media (min-width: 80em) {
+
+  #container {
+    width: 80em;
+    margin: auto;
+  }
+
+}
+
+@media (max-width: 80em) {
+  #container {
+    width: 100%;
+  }
+}
+
+@media (min-width: 30em) {
+  td:nth-child(1) {
+    padding-right: 10em;
+    min-width: 10em;
+  }
+}
+
+@media (max-width: 30em) {
+  td:nth-child(1) {
+    padding-right: 2em;
+  }
 }
