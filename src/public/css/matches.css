@@ -1,3 +1,11 @@
+.matchRubber-input {
+  visibility: hidden;
+}
+
+.comfirm-button-group {
+  position: absolute;
+}
+
 .players-box {
   position: relative;
 }
@@ -25,6 +33,10 @@
 
 .plus-button {
   vertical-align: middle;
+}
+
+.double-line {
+  margin-bottom: 1.6em;
 }
 
 .match {

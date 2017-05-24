@@ -27,8 +27,12 @@
         <div class="heading" >Competition:</div>
         <div class="value" ><%= match.competitionName %></div>
       </div>
+      <div class="matchData">
+        <div class="heading" >Rubber:</div>
+        <div class="value" ><%= match.rubberID %></div>
+      </div>
       <% } else { %>
-        <div class="matchCompetition" >Free play match</div>
+        <div class="matchCompetition double-line" >Free play match</div>
       <% } %>
       <% match.opponents.forEach( function(opponent){ %>
       <div class="opponent" >
@@ -68,6 +72,7 @@
 
     <% }); %>
 
+    <% if(login.logged_in) { %>
     <div class="match" >
       <img src="/images/plus.svg" class="plus-button" id="plus_button"/>
       <div id="addmatch_container">
@@ -93,32 +98,22 @@
         <div class="matchData matchCompetition">
           <div class="heading" >Competition:</div>
           <div class="value" >
-            <select>
+            <select id="competition_change">
               <option value="free play">Free Play</option>
+              <% competitions.forEach( function(competition) { %>
+                <option value="<%= competition.ID %>"><%= competition.name %></option>
+              <% }); %>
             </select>
           </div>
         </div>
-        <div class="opponent" >
-          <table>
-            <tr>
-              <td>Sets</td>
-              <td>Player(s)</td>
-              <td>Team</td>
-            </tr>
-            <tr>
-              <td class="opponentSetsWon" ><input type="number" min="0" max="3" class="opponentSetsWon-input"/></td>
-              <td>
-                <span class="players-added"></span>
-                <input type="text" class="players-input"/>
-              </td>
-              <td>
-                <select>
-                  <option value="no team">No Team</option>
-                </select>
-              </td>
-            </tr>
-          </table>
+        <div class="matchData matchRubber-input" id="matchRubber_input">
+          <div class="heading" >Rubber:</div>
+          <div class="value" >
+            <select id="matchRubber_input_select">
+            </select>
+          </div>
         </div>
+        <% for(var i = 0; i<2; i++) { %>
         <div class="opponent" >
           <table>
             <tr>
@@ -142,12 +137,14 @@
             </tr>
           </table>
         </div>
-
-        <img src="/images/plus.svg" class="rotate-plus comfirm-button" id="cross_button"/><img src="/images/tick.svg" class="comfirm-button" id="tick"/>
-
+        <% } %>
+        <div class="comfirm-button-group">
+          <img src="/images/plus.svg" class="rotate-plus comfirm-button" id="cross_button"/>
+          <img src="/images/tick.svg" class="comfirm-button" id="tick"/>
+        </div>
       </div>
     </div>
-
+    <% } %>
   </div>
 
 </body>

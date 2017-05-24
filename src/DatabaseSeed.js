@@ -100,7 +100,7 @@ function addMatches() {
         function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
         function three() {APIs.players.getByName("sam", (err, players)=>{player3ID = players[0].ID; four()}) }
         function four() {APIs.players.getByName("ian", (err, players)=>{player4ID = players[0].ID; five()}) }
-        function five() {api.add(1, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [player1ID, player2ID]}, {"setsWon":1, "players": [player3ID, player4ID]}], addUsers );}
+        function five() {api.add(null, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [player1ID, player2ID]}, {"setsWon":1, "players": [player3ID, player4ID]}], addUsers );}
     }
 }
 

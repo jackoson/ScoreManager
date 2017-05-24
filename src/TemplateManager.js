@@ -22,10 +22,17 @@ router.get('/players', function (req, res) {
 })
 
 router.get('/matches', function (req, res) {
-  api.matches.getAll((err, data) => {
+  api.matches.getAll((err, matches) => {
     var login_info = {logged_in: req.logged_in != null, user: req.logged_in_user};
     if( err != null ) {res.render('error',{error: err, login: login_info}); return;}
-    res.render('matches', {matches: data, login: login_info});
+    if( login_info.logged_in) {
+      api.competitions.getAll((err, comps) => {
+        if( err != null ) {res.render('error',{error: err, login: login_info}); return;}
+        res.render('matches', {matches: matches, login: login_info, competitions: comps});
+      });
+    } else {
+      res.render('matches', {matches: matches, login: login_info});
+    }
   })
 })
 
