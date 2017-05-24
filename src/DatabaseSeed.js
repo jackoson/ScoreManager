@@ -49,9 +49,31 @@ function addTeams() {
         function two() {APIs.players.getByName("sam", (err, players)=>{player1ID = players[0].ID; three()}) }
         function three() {api.addTeamPlayer(player1ID, teamID, four);}
         function four() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; five()}) }
-        function five() {api.addTeamPlayer(player2ID, teamID, addMatches);}
+        function five() {api.addTeamPlayer(player2ID, teamID, addCompetitions);}
     }
 
+}
+
+function addCompetitions() {
+    var api = APIs.competitions;
+    a();
+    function a() {
+        one();
+        function one() { api.add("davis cup", two) }
+        function two() { api.add("easter box tennis", addRubbers) }
+    }
+}
+
+function addRubbers() {
+    var api = APIs.competitions;
+    a();
+    function a() {
+        var compId1, compId2;
+        one();
+        function one() { api.getByName("davis cup", function(err, comps) { compId1 = comps[0].ID; two(); }) }
+        function two() { api.getByName("easter box tennis", function(err, comps) { compId2 = comps[0].ID; three(3); }) }
+        function three(n) { if(n>0) {api.addRubber(compId1, () => { three(n-1); })} else {addMatches();} }
+    }
 }
 
 function addMatches() {
@@ -78,17 +100,7 @@ function addMatches() {
         function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
         function three() {APIs.players.getByName("sam", (err, players)=>{player3ID = players[0].ID; four()}) }
         function four() {APIs.players.getByName("ian", (err, players)=>{player4ID = players[0].ID; five()}) }
-        function five() {api.add(1, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [player1ID, player2ID]}, {"setsWon":1, "players": [player3ID, player4ID]}], addCompetitions );}
-    }
-}
-
-function addCompetitions() {
-    var api = APIs.competitions;
-    a();
-    function a() {
-        one();
-        function one() { api.add("davis cup", two) }
-        function two() { api.add("easter box tennis", addUsers) }
+        function five() {api.add(1, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [player1ID, player2ID]}, {"setsWon":1, "players": [player3ID, player4ID]}], addUsers );}
     }
 }
 

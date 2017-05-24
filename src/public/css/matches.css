@@ -19,7 +19,7 @@ div.matchData > div {
 }
 
 div.matchData > div.heading {
-  width: 3em;
+  margin-right: 0.5em;
 }
 
 table {
@@ -28,6 +28,10 @@ table {
 
 h1 {
   margin: 0.5em;
+}
+
+.matchCompetition {
+  margin-top: 0.5em;
 }
 
 .opponentSetsWon  {
@@ -44,10 +48,7 @@ td:nth-child(3) {
   width: 1em;
 }
 
-td {
-  padding-left: 0.2em;
-  padding-right: 0.2em;
-}
+
 
 @media (min-width: 30em) {
   div.match {
@@ -63,6 +64,10 @@ td {
   div.match > div.opponent {
     padding: 0.5em;
     margin-top: 0.5em;
+  }
+  td {
+    padding-left: 0.2em;
+    padding-right: 0.2em;
   }
 }
 

@@ -1,4 +1,5 @@
 "use strict"
+console.log(new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds());
 var fs = require("fs");
 var path = require("path");
 var express = require('express');

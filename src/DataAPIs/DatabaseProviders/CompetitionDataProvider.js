@@ -65,6 +65,11 @@ function addCompetition(name, callback) {
   db.run('insert into competitions (name) values ($name)', {$name: name}, function(err) {db.close(); callback(err, this.lastID);});
 }
 
+function addRubber(compId, callback) {
+  var db = openDatabase();
+  db.run('insert into rubbers (competitionID) values ($compId)', {$compId: compId}, function(err) {db.close(); callback(err, this.lastID);});
+}
+
 function deleteCompetition(ID, callback) {
   var db = openDatabase();
   db.run('delete from competitions where ID = $id', {$id: ID},
@@ -98,6 +103,7 @@ module.exports = {
   getByID : getCompetitionByID,
   getByName : getCompetitionsByName,
   add : addCompetition,
+  addRubber : addRubber,
   deleteByID : deleteCompetition,
   deleteAll : deleteAllCompetitions
 }

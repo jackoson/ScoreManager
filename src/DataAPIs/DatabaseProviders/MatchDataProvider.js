@@ -3,40 +3,54 @@ var teamAPI = require('./TeamDataProvider');
 
 var openDatabase = require("./DatabaseConnector").openDatabase;
 
+var selectMatchesSQLString = `select matches.ID, datetime, type, rubbers.ID as rubberID, competitions.name as competitionName
+                              from matches
+                              LEFT JOIN rubbers ON rubbers.ID = matches.rubberID
+                              LEFT JOIN competitions ON rubbers.competitionID = competitions.ID`;
+
 var selectOpponentsSQLString = `select opponents.ID as ID, opponents.setsWon, teams.ID as teamID, teams.name as teamName
                                 from opponents
                                 LEFT JOIN teamplays ON teamplays.opponentID = opponents.ID
                                 LEFT JOIN teams ON teams.ID = teamplays.teamID
                                 where opponents.matchID = $ID`;
-var selectPlayersSQLString = 'select matchplayers.ID, players.ID, players.name from matchplayers JOIN players ON players.ID = matchplayers.playerID where matchplayers.opponentID = $ID';
+
+var selectPlayersSQLString = `select matchplayers.ID, players.ID, players.name
+                              from matchplayers
+                              JOIN players ON players.ID = matchplayers.playerID
+                              where matchplayers.opponentID = $ID`;
+
 function getAllMatches(callback) {
   var db = openDatabase();
-  db.all('select ID, datetime, type from matches', getMatches);
+  db.all(selectMatchesSQLString, getMatches);
   function getMatches(err, matches_basic) {
     if(err != null) { callback(err); return; }
     if(matches_basic.length == 0) { callback(err, []); return; }
     var matches_with_opponents = [];
-    var next_match = matches_basic.pop();
-    if(matches_basic.length > 0)
-      db.all(selectOpponentsSQLString, {$ID: next_match.ID},
-        function(err, opponents) { getOpponents(err, opponents, next_match, false); });
-    else
-      db.all(selectOpponentsSQLString, {$ID: next_match.ID},
-        function(err, opponents) { getOpponents(err, opponents, next_match, true); });
-
+    populateNextMatch();
+    function populateNextMatch() {
+      var next_match = matches_basic.pop();
+      if(matches_basic.length > 0)
+        db.all(selectOpponentsSQLString, {$ID: next_match.ID},
+          function(err, opponents) { getOpponents(err, opponents, next_match, false); });
+      else
+        db.all(selectOpponentsSQLString, {$ID: next_match.ID},
+          function(err, opponents) { getOpponents(err, opponents, next_match, true); });
+    }
     function getOpponents(err, opponents_basic, match, lastMatch) {
       if(err != null) { console.log("couldn't get match"); callback(err); return; }
       if(opponents_basic.length != 2) { callback("ERROR: match with "+opponents_basic.length+" opponents."); return; }
       var opponents_with_players = [];
 
-      var next_opponent = opponents_basic.pop();
-      if(opponents_basic.length > 0)
-        db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
-          function(err, players) { getPlayers(err, players, next_opponent, false); });
-      else
-        db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
-          function(err, players) { getPlayers(err, players, next_opponent, true); });
-
+      populateNextOpponent();
+      function populateNextOpponent() {
+        var next_opponent = opponents_basic.pop();
+        if(opponents_basic.length > 0)
+          db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
+            function(err, players) { getPlayers(err, players, next_opponent, false); });
+        else
+          db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
+            function(err, players) { getPlayers(err, players, next_opponent, true); });
+      }
       function getPlayers(err, players, opponent, lastOpponent) {
         if(err != null) { console.log("couldn't get players"); callback(err); return; }
         if(players.length == 0) { callback("Not enough players on one side."); return; }
@@ -47,24 +61,12 @@ function getAllMatches(callback) {
           matches_with_opponents.push(match);
           if(lastMatch) {
             callback(err, matches_with_opponents);
-            return;
+          } else {
+            populateNextMatch();
           }
-          var next_match = matches_basic.pop();
-          if(matches_basic.length > 0)
-            db.all(selectOpponentsSQLString, {$ID: next_match.ID},
-              function(err, opponents) { getOpponents(err, opponents, next_match, false); });
-          else
-            db.all(selectOpponentsSQLString, {$ID: next_match.ID},
-              function(err, opponents) { getOpponents(err, opponents, next_match, true); });
-          return;
+        } else {
+          populateNextOpponent();
         }
-        var next_opponent = opponents_basic.pop();
-        if(opponents_basic.length > 0)
-          db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
-            function(err, players) { getPlayers(err, players, next_opponent, false); });
-        else
-          db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
-            function(err, players) { getPlayers(err, players, next_opponent, true); });
       }
     }
   }
@@ -72,7 +74,7 @@ function getAllMatches(callback) {
 
 function getMatchByID(ID, callback){
   var db = openDatabase();
-  db.get('select ID, type, datetime, rubberID from matches where ID = $ID', {$ID: ID}, getMatch);
+  db.get(selectMatchesSQLString + ' where matches.ID = $ID', {$ID: ID}, getMatch);
   function getMatch(err, match_basic) {
     if(err != null) { callback(err); return; }
     if(match_basic == null) {callback(err, {}); return;}
@@ -83,25 +85,8 @@ function getMatchByID(ID, callback){
     function getOpponents(err, opponents_basic, match) {
       if(opponents_basic.length != 2) { callback("ERROR: match with "+opponents_basic.length+" opponents."); return; }
       var opponents_with_players = [];
-
-      var next_opponent = opponents_basic.pop();
-      if(opponents_basic.length > 0)
-        db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
-          function(err, players) { getPlayers(err, players, next_opponent, false); });
-      else
-        db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
-          function(err, players) { getPlayers(err, players, next_opponent, true); });
-
-      function getPlayers(err, players, opponent, lastOpponent) {
-        if(err != null) { console.log("couldn't get players"); callback(err); return; }
-        if(players.length == 0) { callback("Not enough players on one side."); return; }
-        opponent.players = players;
-        opponents_with_players.push(opponent);
-        match.opponents = opponents_with_players;
-        if(lastOpponent) {
-          callback(err, match);
-          return;
-        }
+      populateNextOpponent();
+      function populateNextOpponent() {
         var next_opponent = opponents_basic.pop();
         if(opponents_basic.length > 0)
           db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
@@ -110,12 +95,24 @@ function getMatchByID(ID, callback){
           db.all(selectPlayersSQLString, {$ID: next_opponent.ID},
             function(err, players) { getPlayers(err, players, next_opponent, true); });
       }
+      function getPlayers(err, players, opponent, lastOpponent) {
+        if(err != null) { console.log("couldn't get players"); callback(err); return; }
+        if(players.length == 0) { callback("Not enough players on one side."); return; }
+        opponent.players = players;
+        opponents_with_players.push(opponent);
+        match.opponents = opponents_with_players;
+        if(lastOpponent) {
+          callback(err, match);
+        } else {
+          populateNextOpponent();
+        }
+      }
     }
   }
 }
 
 function addMatch(rubber, type, datetime, opponents, callback) {
-  var db = openDatabase(); 
+  var db = openDatabase();
   db.run('insert into matches (type, datetime, rubberID) values ($type, $datetime, $rubber)', {$type: type, $datetime: datetime, $rubber: rubber},
     function(err){
       if(err != null) {db.close(); callback(err); return;}

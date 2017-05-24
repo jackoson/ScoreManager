@@ -14,13 +14,21 @@
     <div class="match" >
 
       <div class="matchData matchDate">
-        <div class="heading" >Date</div>
+        <div class="heading" >Date:</div>
         <div class="value" ><%= match.datetime %></div>
       </div>
       <div class="matchData matchType">
-        <div class="heading" >Type</div>
+        <div class="heading" >Type:</div>
         <div class="value" ><%= match.type %></div>
       </div>
+      <% if(match.rubberID != null) { %>
+      <div class="matchData matchCompetition">
+        <div class="heading" >Competition:</div>
+        <div class="value" ><%= match.competitionName %></div>
+      </div>
+      <% } else { %>
+        <div class="matchCompetition" >Free play match</div>
+      <% } %>
       <% match.opponents.forEach( function(opponent){ %>
       <div class="opponent" >
 
@@ -32,9 +40,11 @@
             <% } else { %>
             <td>Players</td>
             <% } %>
-            <td><% if(opponent.teamID != null) { %>
+            <td>
+              <% if(opponent.teamID != null) { %>
               Team
-            <% } %></td>
+              <% } %>
+            </td>
           </tr>
           <tr>
             <td class="opponentSetsWon" ><%= opponent.setsWon %></td>
