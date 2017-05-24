@@ -1,0 +1,57 @@
+<div class="match" >
+
+  <div class="matchData matchDate">
+    <div class="heading" >Date:</div>
+    <div class="value" ><%= match.datetime %></div>
+  </div>
+  <div class="matchData matchType">
+    <div class="heading" >Type:</div>
+    <div class="value" ><%= match.type %></div>
+  </div>
+  <% if(match.rubberID != null) { %>
+  <div class="matchData matchCompetition">
+    <div class="heading" >Competition:</div>
+    <div class="value" ><%= match.competitionName %></div>
+  </div>
+  <div class="matchData">
+    <div class="heading" >Rubber:</div>
+    <div class="value" ><%= match.rubberID %></div>
+  </div>
+  <% } else { %>
+    <div class="matchCompetition double-line" >Free play match</div>
+  <% } %>
+  <% match.opponents.forEach( function(opponent){ %>
+  <div class="opponent" >
+
+    <table>
+      <tr>
+        <td>Sets</td>
+        <% if(opponent.players.length == 1) { %>
+        <td>Player</td>
+        <% } else { %>
+        <td>Players</td>
+        <% } %>
+        <td>
+          <% if(opponent.teamID != null) { %>
+          Team
+          <% } %>
+        </td>
+      </tr>
+      <tr>
+        <td class="opponentSetsWon" ><%= opponent.setsWon %></td>
+        <td>
+          <% for( var i=0; i<opponent.players.length-1; i++) { %>
+            <a href="/templates/players/id/<%= opponent.players[i].ID %>"><%= opponent.players[i].name %></a>,
+          <% } %>
+            <a href="/templates/players/id/<%= opponent.players[opponent.players.length-1].ID %>"><%= opponent.players[opponent.players.length-1].name %></a>
+        </td>
+        <td>
+        <% if(opponent.teamID != null) { %>
+          <%= opponent.teamName %>
+        <% } %>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <% }) %>
+</div>

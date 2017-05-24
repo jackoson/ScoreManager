@@ -13,6 +13,7 @@ router.get('/id/:id', function (req, res) {
 })
 
 router.use('/add', function(req, res, next) {
+  
   if (req.body.opponents.length != 2) {
     res.status(400).send("Need two and only two oppenents for a match.");
     return;

@@ -154,7 +154,7 @@ function addMatch(rubber, type, datetime, opponents, callback) {
               else {
                 var player = opponent.players.pop();
                 db.run('insert into matchplayers (playerID, opponentID) values ($playerID, $opponentID)',
-                {$playerID: player, $opponentID: opponentID},addNextPlayer);
+                {$playerID: player.ID, $opponentID: opponentID},addNextPlayer);
               }
             }
           });
@@ -163,14 +163,14 @@ function addMatch(rubber, type, datetime, opponents, callback) {
     });
 }
 
-function AllPlayersAreInTeam(playerIDs, teamID, trueCallback, falseCallback) {
+function AllPlayersAreInTeam(players, teamID, trueCallback, falseCallback) {
   teamAPI.getByID(teamID, function(err, team) {
     if(err != null || team == undefined) {falseCallback();}
     var players = team.players
-    for(var i = 0; i < playerIDs.length;i++){
+    for(var i = 0; i < players.length;i++){
       var found = false;
       for(var j = 0; j < players.length;j++){
-        if(players[j].ID == playerIDs[i])
+        if(players[j].ID == players[i].ID)
           found = true;
       }
       if(found == false) {

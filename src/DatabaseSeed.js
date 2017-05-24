@@ -84,14 +84,14 @@ function addMatches() {
         var player1ID, player2ID;
         function one() {APIs.players.getByName("sam", (err, players)=>{player1ID = players[0].ID; two()}) }
         function two() {APIs.players.getByName("ian", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {api.add(1, 'mens singles', '1996-03-16 09:00:00',[{"setsWon":3, "teamID": 1, "players": [player1ID]}, {"setsWon":2, "teamID": 2, "players": [player2ID]}], b);}
+        function three() {api.add(1, 'mens singles', '1996-03-16 09:00:00',[{"setsWon":3, "teamID": 1, "players": [{ID: player1ID}]}, {"setsWon":2, "teamID": 2, "players": [{ID: player2ID}]}], b);}
     }
     function b(err, matchID) {
         one();
         var player1ID, player2ID;
         function one() {APIs.players.getByName("lesley", (err, players)=>{player1ID = players[0].ID; two()}) }
         function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
-        function three() {api.add(1, 'womens singles', '1998-06-18 09:00:00',[{"setsWon":1, "teamID": 1, "players": [player1ID]}, {"setsWon":2, "teamID": 2, "players": [player2ID]}], c);}
+        function three() {api.add(1, 'womens singles', '1998-06-18 09:00:00',[{"setsWon":1, "teamID": 1, "players": [{ID: player1ID}]}, {"setsWon":2, "teamID": 2, "players": [{ID: player2ID}]}], c);}
     }
     function c() {
         one();
@@ -100,7 +100,7 @@ function addMatches() {
         function two() {APIs.players.getByName("georgina", (err, players)=>{player2ID = players[0].ID; three()}) }
         function three() {APIs.players.getByName("sam", (err, players)=>{player3ID = players[0].ID; four()}) }
         function four() {APIs.players.getByName("ian", (err, players)=>{player4ID = players[0].ID; five()}) }
-        function five() {api.add(null, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [player1ID, player2ID]}, {"setsWon":1, "players": [player3ID, player4ID]}], addUsers );}
+        function five() {api.add(null, 'mixed doubles', '2017-03-30 12:00:00',[{"setsWon":0, "players": [{ID: player1ID}, {ID: player2ID}]}, {"setsWon":1, "players": [{ID: player3ID}, {ID: player4ID}]}], addUsers );}
     }
 }
 

@@ -4,87 +4,28 @@
 <head>
   <% include shared/std_header %>
   <link rel="stylesheet" href="/css/matches.css" />
+  <% if(login.logged_in) { %>
   <script src="/js/matches.js" />
+  <script src="/js/lib/ejs.min.js"></script>
+  <% } %>
 </head>
 <body>
   <% include shared/std_navbar %>
   <div id="container">
     <h1>Matches</h1>
-    <% matches.forEach( function(match) { %>
-
-    <div class="match" >
-
-      <div class="matchData matchDate">
-        <div class="heading" >Date:</div>
-        <div class="value" ><%= match.datetime %></div>
-      </div>
-      <div class="matchData matchType">
-        <div class="heading" >Type:</div>
-        <div class="value" ><%= match.type %></div>
-      </div>
-      <% if(match.rubberID != null) { %>
-      <div class="matchData matchCompetition">
-        <div class="heading" >Competition:</div>
-        <div class="value" ><%= match.competitionName %></div>
-      </div>
-      <div class="matchData">
-        <div class="heading" >Rubber:</div>
-        <div class="value" ><%= match.rubberID %></div>
-      </div>
-      <% } else { %>
-        <div class="matchCompetition double-line" >Free play match</div>
-      <% } %>
-      <% match.opponents.forEach( function(opponent){ %>
-      <div class="opponent" >
-
-        <table>
-          <tr>
-            <td>Sets</td>
-            <% if(opponent.players.length == 1) { %>
-            <td>Player</td>
-            <% } else { %>
-            <td>Players</td>
-            <% } %>
-            <td>
-              <% if(opponent.teamID != null) { %>
-              Team
-              <% } %>
-            </td>
-          </tr>
-          <tr>
-            <td class="opponentSetsWon" ><%= opponent.setsWon %></td>
-            <td>
-              <% for( var i=0; i<opponent.players.length-1; i++) { %>
-                <a href="/templates/players/id/<%= opponent.players[i].ID %>"><%= opponent.players[i].name %></a>,
-              <% } %>
-                <a href="/templates/players/id/<%= opponent.players[opponent.players.length-1].ID %>"><%= opponent.players[opponent.players.length-1].name %></a>
-            </td>
-            <td>
-            <% if(opponent.teamID != null) { %>
-              <%= opponent.teamName %>
-            <% } %>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <% }) %>
-    </div>
-
-    <% }); %>
-
     <% if(login.logged_in) { %>
     <div class="match" >
       <img src="/images/plus.svg" class="plus-button" id="plus_button"/>
       <div id="addmatch_container">
         <div class="matchData matchDate">
           <div class="heading" >Date:</div>
-          <div class="value" ><input type="date" /></div>
+          <div class="value" ><input type="date" id="date_input"/></div>
         </div>
         <div class="matchData matchType">
           <div class="heading" >Type:</div>
           <div class="value" >
-            <select>
-              <option value="false">Select type</option>
+            <select id="type_input">
+              <option value="">Select type</option>
               <option value="womens doubles">Womens doubles</option>
               <option value="mens doubles">Mens doubles</option>
               <option value="mixed doubles">Mixed doubles</option>
@@ -98,7 +39,7 @@
         <div class="matchData matchCompetition">
           <div class="heading" >Competition:</div>
           <div class="value" >
-            <select id="competition_change">
+            <select id="competition_input">
               <option value="free play">Free Play</option>
               <% competitions.forEach( function(competition) { %>
                 <option value="<%= competition.ID %>"><%= competition.name %></option>
@@ -106,15 +47,15 @@
             </select>
           </div>
         </div>
-        <div class="matchData matchRubber-input" id="matchRubber_input">
+        <div class="matchData matchRubber-input" id="matchRubber_input_container">
           <div class="heading" >Rubber:</div>
           <div class="value" >
-            <select id="matchRubber_input_select">
+            <select id="matchRubber_input">
             </select>
           </div>
         </div>
         <% for(var i = 0; i<2; i++) { %>
-        <div class="opponent" >
+        <div class="opponent" id="opponent<%=i+1%>">
           <table>
             <tr>
               <td>Sets</td>
@@ -122,16 +63,16 @@
               <td>Team</td>
             </tr>
             <tr>
-              <td class="opponentSetsWon" ><input type="number" min="0" max="3" class="opponentSetsWon-input"/></td>
+              <td class="opponentSetsWon" ><input type="number" min="0" max="3" class="opponentSetsWon-input" id="setswon_input"/></td>
               <td class="players-box">
-                <span id="players-added"></span>
+                <span id="players_added"></span>
                 <input type="search" class="players-input"/>
                 <select class="suggestions" id="suggestions">
                 </select>
               </td>
               <td>
-                <select>
-                  <option value="no team">No Team</option>
+                <select id="team_input">
+                  <option value="">No Team</option>
                 </select>
               </td>
             </tr>
@@ -140,11 +81,18 @@
         <% } %>
         <div class="comfirm-button-group">
           <img src="/images/plus.svg" class="rotate-plus comfirm-button" id="cross_button"/>
-          <img src="/images/tick.svg" class="comfirm-button" id="tick"/>
+          <img src="/images/tick.svg" class="comfirm-button" id="tick_button"/>
         </div>
       </div>
     </div>
     <% } %>
+    <span id="matches">
+      <% matches.forEach( function(match) { %>
+
+      <% include shared/match_partial %>
+
+      <% }); %>
+    </span>
   </div>
 
 </body>
