@@ -4,6 +4,7 @@
 <head>
   <% include shared/std_header %>
   <link rel="stylesheet" href="/css/matches.css" />
+  <script src="/js/matches.js" />
 </head>
 <body>
   <% include shared/std_navbar %>
@@ -66,6 +67,85 @@
     </div>
 
     <% }); %>
+
+    <div class="match" >
+      <img src="/images/plus.svg" class="plus-button" id="plus_button"/>
+      <div id="addmatch_container">
+        <div class="matchData matchDate">
+          <div class="heading" >Date:</div>
+          <div class="value" ><input type="date" /></div>
+        </div>
+        <div class="matchData matchType">
+          <div class="heading" >Type:</div>
+          <div class="value" >
+            <select>
+              <option value="false">Select type</option>
+              <option value="womens doubles">Womens doubles</option>
+              <option value="mens doubles">Mens doubles</option>
+              <option value="mixed doubles">Mixed doubles</option>
+              <option value="womens singles">Womens singles</option>
+              <option value="mens singles">Mens singles</option>
+              <option value="mixed singles">Mixed singles</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="matchData matchCompetition">
+          <div class="heading" >Competition:</div>
+          <div class="value" >
+            <select>
+              <option value="free play">Free Play</option>
+            </select>
+          </div>
+        </div>
+        <div class="opponent" >
+          <table>
+            <tr>
+              <td>Sets</td>
+              <td>Player(s)</td>
+              <td>Team</td>
+            </tr>
+            <tr>
+              <td class="opponentSetsWon" ><input type="number" min="0" max="3" class="opponentSetsWon-input"/></td>
+              <td>
+                <span class="players-added"></span>
+                <input type="text" class="players-input"/>
+              </td>
+              <td>
+                <select>
+                  <option value="no team">No Team</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="opponent" >
+          <table>
+            <tr>
+              <td>Sets</td>
+              <td>Player(s)</td>
+              <td>Team</td>
+            </tr>
+            <tr>
+              <td class="opponentSetsWon" ><input type="number" min="0" max="3" class="opponentSetsWon-input"/></td>
+              <td>
+                <span class="players-added"></span>
+                <input type="text" class="players-input"/>
+              </td>
+              <td>
+                <select>
+                  <option value="no team">No Team</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <img src="/images/plus.svg" class="rotate-plus comfirm-button" id="cross_button"/><img src="/images/tick.svg" class="comfirm-button" id="tick"/>
+
+      </div>
+    </div>
+
   </div>
 
 </body>

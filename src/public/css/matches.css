@@ -1,4 +1,45 @@
 
+.rotate-plus {
+  transform: rotate(45deg);
+  margin-right: 0.5em;
+}
+
+.comfirm-button {
+  margin-top: 0.5em;
+}
+
+.plus-button {
+  vertical-align: middle;
+}
+
+.match {
+  vertical-align: middle;
+}
+
+@media (min-width: 30em) {
+  .plus-button {
+    width: 15em;
+  }
+}
+
+@media (max-width: 30em) {
+  .plus-button {
+    width: 100%;
+  }
+}
+
+#addmatch_container {
+  display: none;
+}
+
+.opponentSetsWon-input {
+  width: 1em;
+  font-size: 1em;
+}
+.players-input {
+  width: 5em;
+}
+
 @media (max-width: 30em) {
   html {
     font-size: 1.5em;
@@ -9,7 +50,7 @@ div.match {
   background-color: rgba(86,163,166,0.2);
 }
 
-div.match > div.opponent {
+div.match div.opponent {
   background-color: rgba(86,163,166,0.2);
   margin-top: 0.5em;
 }
