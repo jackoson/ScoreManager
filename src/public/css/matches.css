@@ -1,9 +1,17 @@
+.feedback {
+  background-color: rgb(86,163,166);
+  padding: 0.5em;
+  visibility: hidden;s
+}
+
 .matchRubber-input {
   visibility: hidden;
 }
 
-.comfirm-button-group {
-  position: absolute;
+@media (min-width: 30em) {
+  .comfirm-button-group {
+    position: absolute;
+  }
 }
 
 .players-box {
@@ -49,11 +57,17 @@ select::-ms-expand {
   .plus-button {
     width: 15em;
   }
+  .feedback {
+    width: 15em;
+  }
 }
 
 @media (max-width: 30em) {
   .plus-button {
     width: 100%;
+  }
+  .feedback {
+    width: 80%;
   }
 }
 

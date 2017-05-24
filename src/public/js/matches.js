@@ -7,8 +7,10 @@ function initialise() {
   document.getElementById("plus_button").addEventListener('click', showAddScreen);
   document.getElementById("cross_button").addEventListener('click', hideAddScreen);
   document.getElementById("competition_input").addEventListener('change', competitionChange);
-  Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('input', textChange);});
+  Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('input', showSuggestions);});
   Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('keydown', checkKey)});
+  Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('focusout', clearSuggestions)});
+  Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('focusin', showSuggestions)});
   document.getElementById("tick_button").addEventListener('click', addMatch);
 }
 
@@ -63,38 +65,38 @@ function populateOpponent(op) {
     players.push({ID: players_added[i].rev, name: players_added[i].text});
   }
   opponent.players = players;
-  if(findChildById(op,"team_input").value != "") {
-    var team = findChildById(op,"team_input");
+  var team = findChildById(op,"team_input")
+  if(team.value != "") {
     opponent.teamID = team.value;
     opponent.teamName = team.options[team.selectedIndex].text;
-    console.log(opponent.team);
   }
   return opponent;
 }
 
 function validateInputs() {
+  document.getElementById("feedback").style.visibility = "hidden";
   if(document.getElementById("date_input").value == null) {
-    console.log("Must select a date.");
+    document.getElementById("feedback").innerHTML = ("Must select a date.");
   } else if(document.getElementById("type_input").value == "") {
-    console.log("Must select a match type.");
+    document.getElementById("feedback").innerHTML = ("Must select a match type.");
   } else if(document.getElementById("competition_input").value != "free play" && document.getElementById("matchRubber_input").value == "") {
-    console.log("Must select free-play or a competition and rubber.");
+    document.getElementById("feedback").innerHTML = ("Must select free-play or a competition and rubber.");
   } else {
     var op1 = document.getElementById("opponent1");
     var op2 = document.getElementById("opponent2");
     if(findChildById(op1,"setswon_input").value == "" || findChildById(op2,"setswon_input").value == "") {
-      console.log("Must fill in sets won for both sides.");
+      document.getElementById("feedback").innerHTML = ("Must fill in sets won for both sides.");
     } else if(findChildById(op1,"players_added").innerHTML == "" || findChildById(op2,"players_added").innerHTML == "") {
-      console.log("Need a player on each side.");
+      document.getElementById("feedback").innerHTML = ("Need a player on each side.");
     } else if(findChildById(op1,"team_input").value != "" && findChildById(op2,"team_input").value == "") {
-      console.log("Either both have a team or neither.");
+      document.getElementById("feedback").innerHTML = ("Either both have a team or neither.");
     } else if(findChildById(op1,"team_input").value == "" && findChildById(op2,"team_input").value != "") {
-      console.log("Either both sides have a team or neither.");
+      document.getElementById("feedback").innerHTML = ("Either both sides have a team or neither.");
     } else {
       return true;
     }
-    return false;
   }
+  document.getElementById("feedback").style.visibility = "visible";
   return false;
 }
 
@@ -111,36 +113,49 @@ function clearInputs() {
   findChildById(op2,"setswon_input").value = "";
   findChildById(op2,"players_added").innerHTML = "";
   findChildById(op2,"team_input").value != "";
+  document.getElementById("feedback").innerHTML = "";
+  document.getElementById("feedback").style.visibility = "hidden";
 }
 
 function checkKey(event) {
   if(event.keyCode == 40) { //down arrow
     findChildById(event.target.parentNode,"suggestions").focus();
   } else if(event.keyCode == 13) { //enter
-    var selected_element = findChildById(event.target.parentNode,"suggestions").childNodes[0];
-    var new_player = document.createElement("a");
-    new_player.href = "/templates/players/id/" + selected_element.value;
-    new_player.rev = selected_element.value;
-    new_player.text = selected_element.text;
-    var added_space = findChildById(event.target.parentNode,"players_added");
-    if(added_space.innerHTML != "") {
-      added_space.innerHTML += ", "
-    }
-    added_space.appendChild(new_player);
+    addPlayerToOpponent(event.target.parentNode);
     event.target.value = "";
     textChange(event);
   }
 }
 
-function textChange(event) {
+function addPlayerToOpponent(opponent) {
+  var selected_element = findChildById(opponent,"suggestions").childNodes[0];
+  var new_player = document.createElement("a");
+  new_player.href = "/templates/players/id/" + selected_element.value;
+  new_player.rev = selected_element.value;
+  new_player.text = selected_element.text;
+  var added_space = findChildById(opponent,"players_added");
+  if(added_space.innerHTML != "") {
+    added_space.innerHTML += ", "
+  }
+  added_space.appendChild(new_player);
+}
+
+function clearSuggestions(event) {
+  var suggestions = findChildById(event.target.parentNode,"suggestions");
+  if(!suggestions.focus) {
+    suggestions.style.visibility = "hidden";
+  }
+}
+
+function showSuggestions(event) {
   var search = event.target.value;
+  var suggestions = findChildById(event.target.parentNode,"suggestions");
   if(search == "") {
-    findChildById(event.target.parentNode,"suggestions").style.visibility = "hidden";
+    suggestions.style.visibility = "hidden";
   } else {
     get("/players/name/" + event.target.value, receive);
     function receive(responseText) {
       var players = JSON.parse(responseText);
-      var suggestions = findChildById(event.target.parentNode,"suggestions");
       suggestions.innerHTML = "";
       if(players.length == 0) {
         var li = document.createElement("li");
