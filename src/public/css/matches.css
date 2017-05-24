@@ -12,14 +12,16 @@
 
 .suggestions {
   visibility: hidden;
+  display: block;
   background-color: rgb(86,163,166);
   position: absolute;
-  padding: 0em;
-  top: 1.2em;
+  margin-right: 20px;
+  overflow-y: auto;
+  -webkit-appearance:none;
 }
 
-.suggestions li {
-  display: block;
+select::-ms-expand {
+    display: none;
 }
 
 .rotate-plus {
@@ -63,8 +65,10 @@
   width: 1em;
   font-size: 1em;
 }
+
 .players-input {
   width: 5em;
+  display: block;
 }
 
 @media (max-width: 30em) {
