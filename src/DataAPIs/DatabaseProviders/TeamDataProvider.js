@@ -79,7 +79,7 @@ function getTeamPlayerByID(ID, callback) {
   var db = openDatabase();
   db.get(`select teamplayers.ID as teamplayerID, players.ID as playerID, players.name as playerName, players.sex as playerSex, teams.ID as teamID, teams.name as teamName from teamplayers
           JOIN players ON players.ID = teamplayers.playerID
-          JOIN teams ON teams.ID = teamplayers.teamID 
+          JOIN teams ON teams.ID = teamplayers.teamID
           where teamplayers.ID = $ID`, {$ID: ID}, function(err, rows) { db.close(); if (err != null) {callback(err);} else if(rows != undefined){callback(err, rows);} else {callback(err, {}) } });
 }
 
@@ -104,7 +104,7 @@ function deleteTeam(ID, callback) {
 
 function deleteAllTeams(callback) {
   var db = openDatabase();
-  db.run('delete from teams', 
+  db.run('delete from teams',
     function(err) {
       db.run('delete from teamplayers',
         function(err) {

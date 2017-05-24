@@ -28,7 +28,10 @@ router.get('/matches', function (req, res) {
     if( login_info.logged_in) {
       api.competitions.getAll((err, comps) => {
         if( err != null ) {res.render('error',{error: err, login: login_info}); return;}
-        res.render('matches', {matches: matches, login: login_info, competitions: comps});
+        api.teams.getAll((err, teams) => {
+          if( err != null ) {res.render('error',{error: err, login: login_info}); return;}
+          res.render('matches', {matches: matches, login: login_info, competitions: comps, teams: teams});
+        });
       });
     } else {
       res.render('matches', {matches: matches, login: login_info});

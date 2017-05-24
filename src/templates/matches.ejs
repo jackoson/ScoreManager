@@ -73,6 +73,9 @@
               <td>
                 <select id="team_input">
                   <option value="">No Team</option>
+                  <% teams.forEach( function(team){ %>
+                    <option value="<%= team.ID %>"><%= team.name %></option>
+                  <% }); %>
                 </select>
               </td>
             </tr>

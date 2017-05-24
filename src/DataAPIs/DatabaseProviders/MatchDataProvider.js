@@ -163,14 +163,14 @@ function addMatch(rubber, type, datetime, opponents, callback) {
     });
 }
 
-function AllPlayersAreInTeam(players, teamID, trueCallback, falseCallback) {
+function AllPlayersAreInTeam(playerIDs, teamID, trueCallback, falseCallback) {
   teamAPI.getByID(teamID, function(err, team) {
     if(err != null || team == undefined) {falseCallback();}
     var players = team.players
-    for(var i = 0; i < players.length;i++){
+    for(var i = 0; i < playerIDs.length;i++){
       var found = false;
       for(var j = 0; j < players.length;j++){
-        if(players[j].ID == players[i].ID)
+        if(players[j].ID == playerIDs[i].ID)
           found = true;
       }
       if(found == false) {

@@ -24,6 +24,55 @@ function hideAddScreen() {
 }
 
 function addMatch() {
+  if(!validateInputs())
+    return;
+  var match = {};
+  match.datetime = document.getElementById("date_input").value;
+  match.type = document.getElementById("type_input").value;
+  if(document.getElementById("matchRubber_input").value != "") {
+    match.rubber = document.getElementById("matchRubber_input").value;
+  }
+  var opponents = [];
+  opponents.push(populateOpponent(document.getElementById("opponent1")));
+  opponents.push(populateOpponent(document.getElementById("opponent2")));
+  match.opponents = opponents;
+
+  post("/matches/add", JSON.stringify(match), post_response);
+
+  function post_response() { get("/templates/match_partial.ejs", get_response); }
+
+  function get_response(template) {
+    var rubber = document.getElementById("matchRubber_input").value;
+    if(rubber != "") {
+      var select = document.getElementById("competition_input");
+      match.competitionName = select.options[select.selectedIndex].text;
+      match.rubberID = rubber;
+    }
+    var container = document.getElementById("matches");
+    container.innerHTML = ejs.render(template,{match: match}) + container.innerHTML;
+    hideAddScreen()
+  }
+}
+
+function populateOpponent(op) {
+  var opponent = {};
+  opponent.setsWon = findChildById(op,"setswon_input").value;
+  var players_added = findChildById(op,"players_added").childNodes;
+  var players = [];
+  for(var i = 0; i<players_added.length; i++) {
+    players.push({ID: players_added[i].rev, name: players_added[i].text});
+  }
+  opponent.players = players;
+  if(findChildById(op,"team_input").value != "") {
+    var team = findChildById(op,"team_input");
+    opponent.teamID = team.value;
+    opponent.teamName = team.options[team.selectedIndex].text;
+    console.log(opponent.team);
+  }
+  return opponent;
+}
+
+function validateInputs() {
   if(document.getElementById("date_input").value == null) {
     console.log("Must select a date.");
   } else if(document.getElementById("type_input").value == "") {
@@ -31,8 +80,8 @@ function addMatch() {
   } else if(document.getElementById("competition_input").value != "free play" && document.getElementById("matchRubber_input").value == "") {
     console.log("Must select free-play or a competition and rubber.");
   } else {
-    var op1 = document.getElementById("opponent1")
-    var op2 = document.getElementById("opponent2")
+    var op1 = document.getElementById("opponent1");
+    var op2 = document.getElementById("opponent2");
     if(findChildById(op1,"setswon_input").value == "" || findChildById(op2,"setswon_input").value == "") {
       console.log("Must fill in sets won for both sides.");
     } else if(findChildById(op1,"players_added").innerHTML == "" || findChildById(op2,"players_added").innerHTML == "") {
@@ -42,57 +91,11 @@ function addMatch() {
     } else if(findChildById(op1,"team_input").value == "" && findChildById(op2,"team_input").value != "") {
       console.log("Either both sides have a team or neither.");
     } else {
-      var match = {};
-      match.datetime = document.getElementById("date_input").value;
-      match.type = document.getElementById("type_input").value;
-      if(document.getElementById("matchRubber_input").value != "") {
-        match.rubber = document.getElementById("matchRubber_input").value;
-      }
-      var opponents = [];
-      var opponent1 = {};
-      opponent1.setsWon = findChildById(op1,"setswon_input").value;
-      var players_added = findChildById(op1,"players_added").childNodes;
-      var players = [];
-      for(var i = 0; i<players_added.length; i++) {
-        players.push({ID: players_added[i].rev, name: players_added[i].text});
-      }
-      opponent1.players = players;
-      if(findChildById(op1,"team_input").value != "") {
-        opponent1.team = findChildById(op1,"team_input").value;
-      }
-      opponents.push(opponent1);
-
-      var opponent2 = {};
-      opponent2.setsWon = findChildById(op2,"setswon_input").value;
-      var players_added = findChildById(op2,"players_added").childNodes;
-      var players = [];
-      for(var i = 0; i<players_added.length; i++) {
-        players.push({ID: players_added[i].rev, name: players_added[i].text});
-      }
-      opponent2.players = players;
-      if(findChildById(op2,"team_input").value != "") {
-        opponent2.team = findChildById(op2,"team_input").value;
-      }
-      opponents.push(opponent2);
-      match.opponents = opponents;
-
-      post("/matches/add", JSON.stringify(match), post_response);
-      function post_response(post_responseText) {
-        get("/templates/match_partial.ejs", get_response);
-      }
-      function get_response(template) {
-        var rubber = document.getElementById("matchRubber_input").value;
-        if(rubber != "") {
-          var select = document.getElementById("competition_input");
-          match.competitionName = select.options[select.selectedIndex].text;
-          match.rubberID = rubber;
-        }
-        var container = document.getElementById("matches");
-        container.innerHTML = ejs.render(template,{match: match}) + container.innerHTML;
-        hideAddScreen()
-      }
+      return true;
     }
+    return false;
   }
+  return false;
 }
 
 function clearInputs() {
