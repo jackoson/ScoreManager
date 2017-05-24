@@ -6,6 +6,8 @@ function initialise() {
   document.getElementById("date_input").valueAsDate = new Date();
   document.getElementById("plus_button").addEventListener('click', showAddScreen);
   document.getElementById("cross_button").addEventListener('click', hideAddScreen);
+  document.getElementById("tick_button").addEventListener('click', addMatch);
+
   document.getElementById("competition_input").addEventListener('change', competitionChange);
   Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('input', showSuggestions);});
   Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('keydown', checkKey)});
@@ -14,8 +16,6 @@ function initialise() {
 
   Array.from(document.getElementsByClassName("suggestions")).forEach((e)=>{e.addEventListener('click', onClickSuggestion)});
   Array.from(document.getElementsByClassName("suggestions")).forEach((e)=>{e.addEventListener('keydown', onSuggestionEnter)});
-
-  document.getElementById("tick_button").addEventListener('click', addMatch);
 }
 
 function onClickSuggestion() {
@@ -50,6 +50,7 @@ function hideAddScreen() {
 function addMatch() {
   if(!validateInputs())
     return;
+  document.getElementById("tick_button").removeEventListener('click', addMatch);
   var match = {};
   match.datetime = document.getElementById("date_input").value;
   match.type = document.getElementById("type_input").value;
@@ -74,7 +75,8 @@ function addMatch() {
     }
     var container = document.getElementById("matches");
     container.innerHTML = ejs.render(template,{match: match}) + container.innerHTML;
-    hideAddScreen()
+    hideAddScreen();
+    document.getElementById("tick_button").addEventListener('click', addMatch);
   }
 }
 

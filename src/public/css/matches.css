@@ -37,6 +37,17 @@ select::-ms-expand {
   margin-right: 0.5em;
 }
 
+button.confirm {
+  padding: 0px;
+  background-color: rgba(0,0,0,0);
+  border: 0px;
+}
+
+.tick-button {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
 .comfirm-button {
   margin-top: 0.5em;
 }
