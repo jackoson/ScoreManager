@@ -1,7 +1,17 @@
 
+@media (max-width: 30em) {
+  html {
+    font-size: 1.5em;
+  }
+}
+
 div.match {
-  border: 1px solid black;
-  padding: 1em;
+  background-color: rgba(86,163,166,0.2);
+}
+
+div.match > div.opponent {
+  background-color: rgba(86,163,166,0.2);
+  margin-top: 0.5em;
 }
 
 div.matchData > div {
@@ -12,50 +22,47 @@ div.matchData > div.heading {
   width: 3em;
 }
 
-div.match > div.opponent {
-  border: 1px solid black;
-  padding: 0.5em;
-  margin-top: 0.5em;
+table {
+  width: 100%;
 }
 
-div.match > div.opponent > * {
-  display: inline-block;
+h1 {
+  margin: 0.5em;
+}
+
+.opponentSetsWon  {
+  font-size: 2em;
+}
+
+td:nth-child(1) {
   text-align: center;
+  width: 1em;
 }
 
-div.match > div.opponent > div.opponentSetsWon > div.value {
-  font-size: 2em;
+td:nth-child(3) {
+  text-align: center;
+  width: 1em;
 }
 
-div.match > div.opponent > div.players > div.value * {
-  display: inline;
-  text-decoration: none;
-}
-
-div.match > div.opponent > div.players > div.value {
-  font-size: 1.5em;
-}
-
-div.match > div.opponent > div.opponentTeam > div.value {
-  font-size: 2em;
+td {
+  padding-left: 0.2em;
+  padding-right: 0.2em;
 }
 
 @media (min-width: 30em) {
   div.match {
     display: inline-block;
     margin: 1em;
-    width: 20em;
+    width: 15em;
   }
 
-  div.match > div.opponent > div.players {
-    width: 10em;
+  div.match {
+    padding: 1em;
   }
 
-  div.match > div.opponent > div.opponentTeam {
-    width: 5em;
-  }
-  div.match > div.opponent > div.opponentSetsWon {
-    width: 3em;
+  div.match > div.opponent {
+    padding: 0.5em;
+    margin-top: 0.5em;
   }
 }
 
@@ -65,15 +72,7 @@ div.match > div.opponent > div.opponentTeam > div.value {
     margin: 0.5em auto;
     width: 80%;
   }
-
-  div.match > div.opponent > div.players {
-    width: 100%;
-  }
-
-  div.match > div.opponent > div.opponentTeam {
-    width: 100%;
-  }
-  div.match > div.opponent > div.opponentSetsWon {
-    width: 100%;
+  div.match {
+    padding: 0.5em;
   }
 }

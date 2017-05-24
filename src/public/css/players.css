@@ -73,19 +73,11 @@ td {
   padding-bottom: 1em;
 }
 
-@media (min-width: 80em) {
-
-  #container {
-    width: 80em;
-    margin: auto;
-  }
-
-}
-
-@media (max-width: 80em) {
-  #container {
-    width: 100%;
-  }
+#container {
+  display: inline-block;
+  position: relative;
+    left: 50%;
+  transform: translate(-50%);
 }
 
 @media (min-width: 30em) {

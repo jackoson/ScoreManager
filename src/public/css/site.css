@@ -4,6 +4,14 @@ html {
   background-color: #DDF0FF;
 }
 
+body {
+  margin: 0px;
+}
+
+#container {
+  margin:1%;
+}
+
 @media (min-width: 30em) {
   html {
     font-size: 1em;
