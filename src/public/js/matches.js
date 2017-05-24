@@ -11,7 +11,29 @@ function initialise() {
   Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('keydown', checkKey)});
   Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('focusout', clearSuggestions)});
   Array.from(document.getElementsByClassName("players-input")).forEach((e)=>{e.addEventListener('focusin', showSuggestions)});
+
+  Array.from(document.getElementsByClassName("suggestions")).forEach((e)=>{e.addEventListener('click', onClickSuggestion)});
+  Array.from(document.getElementsByClassName("suggestions")).forEach((e)=>{e.addEventListener('keydown', onSuggestionEnter)});
+
   document.getElementById("tick_button").addEventListener('click', addMatch);
+}
+
+function onClickSuggestion() {
+  addPlayerToOpponent(event.target.parentNode, event.target.selectedIndex);
+  var search = findChildById(event.target.parentNode,"search");
+  search.value = "";
+  search.focus();
+  event.target.style.visibility = "hidden";
+}
+
+function onSuggestionEnter(event) {
+  if(event.keyCode == 13) { //enter
+    addPlayerToOpponent(event.target.parentNode, event.target.selectedIndex);
+    var search = findChildById(event.target.parentNode,"search");
+    search.value = "";
+    search.focus();
+    event.target.style.visibility = "hidden";
+  }
 }
 
 function showAddScreen() {
@@ -62,7 +84,9 @@ function populateOpponent(op) {
   var players_added = findChildById(op,"players_added").childNodes;
   var players = [];
   for(var i = 0; i<players_added.length; i++) {
-    players.push({ID: players_added[i].rev, name: players_added[i].text});
+    if(players_added[i].tagName == "a") {
+      players.push({ID: players_added[i].rev, name: players_added[i].text});
+    }
   }
   opponent.players = players;
   var team = findChildById(op,"team_input")
@@ -121,14 +145,14 @@ function checkKey(event) {
   if(event.keyCode == 40) { //down arrow
     findChildById(event.target.parentNode,"suggestions").focus();
   } else if(event.keyCode == 13) { //enter
-    addPlayerToOpponent(event.target.parentNode);
+    addPlayerToOpponent(event.target.parentNode, 0);
     event.target.value = "";
-    textChange(event);
+    showSuggestions(event);
   }
 }
 
-function addPlayerToOpponent(opponent) {
-  var selected_element = findChildById(opponent,"suggestions").childNodes[0];
+function addPlayerToOpponent(opponent, id) {
+  var selected_element = findChildById(opponent,"suggestions").childNodes[id];
   var new_player = document.createElement("a");
   new_player.href = "/templates/players/id/" + selected_element.value;
   new_player.rev = selected_element.value;
