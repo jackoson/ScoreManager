@@ -7,16 +7,18 @@
 </head>
 <body>
   <% include shared/std_navbar %>
-  <h1>Competitions</h1>
-  <table>
-  <tr>
-    <td>Name</td>
-  </tr>
-  <% competitions.forEach( function(competition) { %>
-  <tr>
-    <td> <%= competition.name %> </td>
-  </tr>
-  <% }); %>
-  </table>
+  <div id="container">
+    <h1>Competitions</h1>
+    <table>
+    <tr>
+      <td>Name</td>
+    </tr>
+    <% competitions.forEach( function(competition) { %>
+    <tr>
+      <td> <%= competition.name %> </td>
+    </tr>
+    <% }); %>
+    </table>
+  </div>
 </body>
 </html>

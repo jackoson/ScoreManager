@@ -6,3 +6,14 @@ tr:nth-child(1) {
 h1 {
   font-size: 1.5em;
 }
+
+#container {
+  display: inline-block;
+  position: relative;
+    left: 50%;
+  transform: translate(-50%);
+}
+
+table {
+  font-size: 2em;
+}

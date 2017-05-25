@@ -7,72 +7,36 @@
 </head>
 <body>
   <% include shared/std_navbar %>
-  <% if(player == null) { %>
-  <h1>Player Not Found</h1>
-  <% } else { %>
-  <h1><%= player.name %> ( <%= player.sex %> ) </h1>
-  <div id="tournements" class="infoTable" >
-    <h2>Tournements</h2>
-    <table>
-    <tr>
-      <td> Name </td>
-      <td> Points </td>
-    </tr>
-    <% player.tournements.forEach(function(tournement){ %>
-    <tr>
-      <td> <%= tournement.name %> </td>
-    </tr>
-    <% }) %>
-    </table>
-  </div>
-
-  <div id="otherMatches" class="infoTable" >
-    <h2>All Matches</h2>
-    <% player.matches.forEach( function(match) { %>
-
-  <div class="match" >
-
-    <div class="matchData matchDate">
-      <div class="heading" >Date</div>
-      <div class="value" ><%= match.datetime %></div>
+  <div id="container">
+    <% if(player == null) { %>
+    <h1>Player Not Found</h1>
+    <% } else { %>
+    <h1><%= player.name %> ( <%= player.sex %> ) </h1>
+    <div id="tournements" class="infoTable" >
+      <h2>Tournements</h2>
+      <table>
+      <tr>
+        <td> Name </td>
+        <td> Points </td>
+      </tr>
+      <% player.tournements.forEach(function(tournement){ %>
+      <tr>
+        <td> <%= tournement.name %> </td>
+      </tr>
+      <% }) %>
+      </table>
     </div>
-    <div class="matchData matchType">
-      <div class="heading" >Type</div>
-      <div class="value" ><%= match.type %></div>
-    </div>
-    <% match.opponents.forEach( function(opponent){ %>
-    <div class="opponent" >
-      <div class="opponentSetsWon" >
-        <div class="heading" >Sets</div>
-        <div class="value" ><%= opponent.setsWon %></div>
-      </div>
-      <div class="players" >
-        <% if(opponent.players.length == 1) { %>
-        <div class="heading" >Player</div>
-        <% } else { %>
-        <div class="heading" >Players</div>
-        <% } %>
-        <div class="value" >
-          <% for( var i=0; i<opponent.players.length-1; i++) { %>
-            <div class="player"><a href="/templates/players/id/<%= opponent.players[i].ID %>"><%= opponent.players[i].name %></a></div>,
-          <% } %>
-            <div class="player"><a href="/templates/players/id/<%= opponent.players[opponent.players.length-1].ID %>"><%= opponent.players[opponent.players.length-1].name %></a></div>
-        </div>
-      </div>
-      <div class="opponentTeam" >
-        <% if(opponent.teamID != null) { %>
-        <div class="heading" >Team</div>
-        <div class="value" ><%= opponent.teamName %></div>
-        <% } %>
-      </div>
-    </div>
-    <% }) %>
-  </div>
 
-  <% }); %>
-  </div>
-  <% } %>
-  <div class="clear" ></div>
+    <div id="otherMatches" class="infoTable" >
+      <h2>All Matches</h2>
+      <% player.matches.forEach( function(match) { %>
 
+      <% include shared/match_partial %>
+
+      <% }); %>
+    </div>
+    <% } %>
+    <div class="clear" ></div>
+  </div>
 </body>
 </html>

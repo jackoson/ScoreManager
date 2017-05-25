@@ -1,10 +1,12 @@
 
 div.team {
-  border: 1px solid black;
+  background-color: rgba(86,163,166,0.4);
   padding: 1em;
 }
 
-
+h1 {
+  margin-left: 0.5em;
+}
 
 div.team > div.teamName {
   font-weight: bold;

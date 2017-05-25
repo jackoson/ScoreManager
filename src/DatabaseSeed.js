@@ -59,8 +59,12 @@ function addCompetitions() {
     a();
     function a() {
         one();
-        function one() { api.add("davis cup", two) }
-        function two() { api.add("easter box tennis", addRubbers) }
+        function one() { api.add("welcome tournement", two) }
+        function two() { api.add("davis cup", three) }
+        function three() { api.add("winter doubles", four) }
+        function four() { api.add("easter box tennis", five) }
+        function five() { api.add("summer term singles", six) }
+        function six() { api.add("easter box tennis", addRubbers) }
     }
 }
 

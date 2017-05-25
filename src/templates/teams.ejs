@@ -7,18 +7,20 @@
 </head>
 <body>
   <% include shared/std_navbar %>
-  <h1>Teams</h1>
-  <% teams.forEach( function(team) { %>
-  
-  <div class="team" >
-  <div class="teamName"><%= team.name %></div>
-    <% team.players.forEach( function(player){ %>
-      <div class="player" >
-        <div class="playerName" ><a href="/templates/players/id/<%= player.ID %>"><%= player.name %></a></div>
-        <div class="playerSex" ><%= player.sex %></div>
-      </div>
+  <div id="container">
+    <h1>Teams</h1>
+    <% teams.forEach( function(team) { %>
+
+    <div class="team" >
+    <div class="teamName"><%= team.name %></div>
+      <% team.players.forEach( function(player){ %>
+        <div class="player" >
+          <div class="playerName" ><a href="/templates/players/id/<%= player.ID %>"><%= player.name %></a></div>
+          <div class="playerSex" ><%= player.sex %></div>
+        </div>
+      <% }) %>
+    </div>
     <% }) %>
   </div>
-  <% }) %>
 </body>
 </html>
