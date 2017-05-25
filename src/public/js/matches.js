@@ -62,9 +62,14 @@ function addMatch() {
   opponents.push(populateOpponent(document.getElementById("opponent2")));
   match.opponents = opponents;
 
-  post("/matches/add", JSON.stringify(match), post_response);
+  post("/matches/add", JSON.stringify(match), post_response, error);
 
   function post_response() { get("/templates/match_partial.ejs", get_response); }
+  function error(message) {
+    document.getElementById("feedback").innerHTML = message;
+    document.getElementById("feedback").style.visibility = "visible";
+    document.getElementById("tick_button").addEventListener('click', addMatch);
+   }
 
   function get_response(template) {
     var rubber = document.getElementById("matchRubber_input").value;
@@ -242,13 +247,13 @@ function get(addr, receive) {
   req.send();
 }
 
-function post(addr, data, receive) {
+function post(addr, data, receive, error) {
   var req = new XMLHttpRequest();
   req.onreadystatechange = function() {
     if (this.readyState != XMLHttpRequest.DONE)
       return;
     if(this.status != 200) {
-      console.log(this.responseText);
+      error(this.responseText);
       return;
     }
     receive(this.responseText);
