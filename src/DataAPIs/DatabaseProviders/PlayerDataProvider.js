@@ -23,9 +23,12 @@ function getPlayerByID(ID, callback){
     if(err != null) { callback(err); return; }
     if(player_basic == null) { callback("Player does not exist."); return; }
     var player = player_basic;
-    db.all(`select matches.ID, matches.datetime, matches.type from matchplayers
+    db.all(`select matches.ID, matches.datetime, matches.type, rubbers.ID as rubberID, competitions.name as competitionName
+            from matchplayers
             JOIN opponents ON opponents.ID = matchplayers.opponentID
             JOIN matches ON matches.ID = opponents.matchID
+            LEFT JOIN rubbers ON rubbers.ID = matches.rubberID
+            LEFT JOIN competitions ON rubbers.competitionID = competitions.ID
             where matchplayers.playerID = $ID`, {$ID: player.ID}, getMatches);
     function getMatches(err, matches_basic) {
       if(err != null) { callback(err); return; }
