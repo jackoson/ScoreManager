@@ -88,7 +88,7 @@ function getPlayerByID(ID, callback){
       }
     }
     function request_tournements() {
-      db.all(`select competitions.ID, competitions.name from matchplayers
+      db.all(`select DISTINCT competitions.ID, competitions.name from matchplayers
               JOIN opponents ON opponents.ID = matchplayers.opponentID
               JOIN matches ON matches.ID = opponents.matchID
               JOIN rubbers ON rubbers.ID = matches.rubberID
