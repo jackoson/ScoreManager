@@ -59,7 +59,8 @@ function deliverXHTML_static(res, path, stat) {
 }
 
 function deliverXHTML_templates(req, res, next) {
-    res.header("Content-Type", "application/xhtml+xml");
+    if(req.headers.accept.includes("application/xhtml+xml"))
+      res.header("Content-Type", "application/xhtml+xml");
     next();
 }
 
