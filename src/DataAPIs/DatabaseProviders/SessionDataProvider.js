@@ -13,6 +13,11 @@ function getSessionByID(id, callback) {
     db.get('select * from sessions where ID = $ID', {$ID: id}, function(err, data) { db.close(); callback(err, data); });
 }
 
+function updateSessionExpiration(id, callback) {
+    var db = openDatabase();
+    db.get('update sessions set created = $datetime where ID = $ID', {$ID: id, $datetime: new Date().getTime()}, function(err) { db.close(); callback(err); });
+}
+
 function addSession(userID, callback) {
     var db = openDatabase();
     var sessionID;
@@ -72,5 +77,6 @@ module.exports = {
   deleteAll : deleteAllSessions,
   deleteOldSessions : deleteOldSessions,
   addSessionUser : addSessionUser,
-  removeSessionUser : removeSessionUser
+  removeSessionUser : removeSessionUser,
+  updateSessionExpiration : updateSessionExpiration
 }

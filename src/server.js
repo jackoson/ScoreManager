@@ -11,6 +11,8 @@ var templateManager = require('./TemplateManager');
 var sessions = require('./DataAPIs/DatabaseProviders/DataProviderController').sessions;
 var users = require('./DataAPIs/DatabaseProviders/DataProviderController').users;
 
+app.all('*', check_https);
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,8 +50,8 @@ var options = {
     cert : fs.readFileSync(path.resolve(__dirname, 'ssl/cert.pem'))
 }
 
-http.createServer(app).listen(80, () => {console.log("http running")});
 https.createServer(options, app).listen(443, () => {console.log("https running")});
+http.createServer(app).listen(80, () => {console.log("http running")});
 
 function deliverXHTML_static(res, path, stat) {
     if (path.endsWith(".html"))
@@ -83,8 +85,17 @@ function landing_page_redirect(req, res) {
   }
 }
 
+function check_https(req, res, next) {
+  if(!req.secure) {
+    res.clearCookie("session");
+    res.redirect("https://" + req.hostname + req.url);
+  } else {
+    next();
+  }
+}
+
 function handle_session(req, res, next) {
-    if(req.cookies.session == null || req.cookies.session_timeout == null) {
+    if(req.cookies.session == null || req.cookies.session_timeout == null || req.session_reset == true) {
         sessions.add(null, setCookie);
     } else {
         sessions.getByID(req.cookies.session, addUser);
@@ -100,7 +111,7 @@ function handle_session(req, res, next) {
             function setUser(err, data) {
               if(err != null || data == null) throw Exception("User does not exist");
                 req.logged_in_user.username = data.username;
-                next();
+                sessions.updateSessionExpiration(req.sessionid, next);
             }
         } else {
             req.sessionid = req.cookies.session;
@@ -117,5 +128,5 @@ function handle_session(req, res, next) {
 
 setInterval(clearOldSessions, 600000 /*Every ten minutes*/ );
 function clearOldSessions() {
-    sessions.deleteOldSessions(new Date(Date.now() - 86400000));
+    sessions.deleteOldSessions(new Date(Date.now() - 86400000 /*Day old*/));
 }
