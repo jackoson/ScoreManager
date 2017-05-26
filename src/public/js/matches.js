@@ -108,7 +108,7 @@ function populateOpponent(op) {
 
 function validateInputs() {
   document.getElementById("feedback").style.visibility = "hidden";
-  if(document.getElementById("date_input").value == null) {
+  if(document.getElementById("date_input").value == null || document.getElementById("date_input").value == "") {
     document.getElementById("feedback").innerHTML = ("Must select a date.");
   } else if(document.getElementById("type_input").value == "") {
     document.getElementById("feedback").innerHTML = ("Must select a match type.");
