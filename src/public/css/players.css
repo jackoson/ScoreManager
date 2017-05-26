@@ -97,6 +97,7 @@ td {
   }
   #name_input {
     padding-right: 2em;
+    width: 50%;
   }
 }
 
