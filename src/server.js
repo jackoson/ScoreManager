@@ -42,6 +42,8 @@ app.use('/teams', APIs.teams);
 
 app.use('/login', APIs.login);
 
+app.use(page_not_found);
+
 var options = {
     key  : fs.readFileSync(path.resolve(__dirname, 'ssl/key.pem')),
     ca   : fs.readFileSync(path.resolve(__dirname, 'ssl/csr.pem')),
@@ -50,6 +52,15 @@ var options = {
 
 https.createServer(options, app).listen(443, () => {console.log("https running")});
 http.createServer(app).listen(80, () => {console.log("http running")});
+
+function page_not_found(req, res) {
+  deliverXHTML_templates(req, res, sendError);
+  function sendError() {
+    var login_info = {logged_in: req.logged_in != null, user: req.logged_in_user};
+    res.header("Content-Type", "application/xhtml+xml");
+    res.status(404).render('page_not_found',{login: login_info});
+  }
+}
 
 function deliverXHTML_static(res, path, stat) {
     if (path.endsWith(".html"))
