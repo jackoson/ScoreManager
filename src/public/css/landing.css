@@ -1,15 +1,15 @@
 
-img#logo {
+#logo {
   width: 10em;
   height: 10em;
 }
 
-div#splashbox {
+#splashbox {
     background-color: #56A3A6;
     display: block;
 }
 
-div#poster > img {
+#poster > img {
   width: 100%
 }
 
@@ -17,12 +17,12 @@ h1 {
   color: white;
 }
 
-div#poster {
+#poster {
   text-align: center;
   display: block;
 }
 
-div.button {
+.button {
   display: inline-block;
   background-color: #44799e;
   padding: 5px;
@@ -31,22 +31,22 @@ div.button {
 
 @media (min-width: 80em) {
 
-  div#splashbox {
+  #splashbox {
     width: 70em;
     margin: 5% auto;
     padding: 4em;
   }
 
-  div#poster {
+  #poster {
     width: 80em;
     margin: auto;
   }
 
-  div#splashbox > div#bigheading > * {
+  #bigheading > * {
     display: inline-block;
   }
 
-  div#splashbox > div#bigheading > img {
+  #logo {
     float: right;
   }
 
@@ -54,21 +54,21 @@ div.button {
 
 @media (max-width: 80em) and (min-width: 30em) {
 
-  div#splashbox {
+  #splashbox {
     margin: 10% auto;
     padding: 5%;
   }
 
-  div#poster {
+  #poster {
     width: 100%;
     margin: auto;
   }
 
-  div#splashbox > div#bigheading > * {
+  #bigheading > * {
     display: inline-block;
   }
 
-  div#splashbox > div#bigheading > img {
+  #logo {
     float: right;
   }
 
@@ -76,16 +76,16 @@ div.button {
 
 @media (max-width: 30em) {
 
-  div#splashbox {
+  #splashbox {
     margin: 10% auto;
     padding: 5%;
   }
 
-  div#splashbox > div#bigheading > * {
+  #bigheading > * {
     display: block;
   }
 
-  div#splashbox > div#bigheading > img {
+  #logo {
     float: none;
   }
 
