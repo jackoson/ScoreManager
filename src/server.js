@@ -42,8 +42,6 @@ app.use('/teams', APIs.teams);
 
 app.use('/login', APIs.login);
 
-var address = fs.readFileSync(path.resolve(__dirname, 'ipaddress.txt'), {encoding: 'utf-8'})
-
 var options = {
     key  : fs.readFileSync(path.resolve(__dirname, 'ssl/key.pem')),
     ca   : fs.readFileSync(path.resolve(__dirname, 'ssl/csr.pem')),
