@@ -20,6 +20,13 @@ router.get('/sex/:sex', function (req, res) {
   provider.getBySex(req.params.sex, function(err,data){ res.send(data); })
 })
 
+router.use('/add', function (req, res, next) {
+  if(req.logged_in) {
+    next();
+  } else {
+    res.status(401).send("Need to be logged in to complete this action");
+  }
+});
 router.use('/add', function(req, res, next) {
   if(req.body.name == undefined) {
     res.status(400).send("Name not specified.");

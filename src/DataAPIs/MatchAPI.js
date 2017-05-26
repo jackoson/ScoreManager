@@ -12,8 +12,15 @@ router.get('/id/:id', function (req, res) {
   provider.getByID(req.params.id, function(err,data){ if (err == null) { res.send(data); } else { res.status(400).send(err); };  })
 })
 
+router.use('/add', function (req, res, next) {
+  if(req.logged_in) {
+    next();
+  } else {
+    res.status(401).send("Need to be logged in to complete this action");
+  }
+});
+
 router.use('/add', function(req, res, next) {
-  
   if (req.body.opponents.length != 2) {
     res.status(400).send("Need two and only two oppenents for a match.");
     return;

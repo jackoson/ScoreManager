@@ -16,6 +16,13 @@ router.get('/name/:name', function (req, res) {
   provider.getByName(req.params.name, function(err,data){ res.send(data); })
 })
 
+router.use('/add', function (req, res, next) {
+  if(req.logged_in) {
+    next();
+  } else {
+    res.status(401).send("Need to be logged in to complete this action");
+  }
+});
 router.use('/add', function(req, res, next) {
   if (req.body.name == null) { res.send("ERROR: Need name to add team."); }
   else { next(); }
@@ -43,13 +50,13 @@ router.get('/teamplayer/id/:id', function (req, res) {
 
 router.delete('/teamplayer/id/:id', function (req, res) {
   provider.deleteTeamPlayerByID(req.params.id, function(err){
-    if (err == null) {res.send("success");} else {res.send(err);}; 
+    if (err == null) {res.send("success");} else {res.send(err);};
   });
 })
 
 router.delete('/id/:id', function (req, res) {
   provider.deleteByID(req.params.id, function(err){
-    if (err == null) {res.send("success");} else {res.send(err);}; 
+    if (err == null) {res.send("success");} else {res.send(err);};
   });
 })
 
