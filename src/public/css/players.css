@@ -1,5 +1,5 @@
 
-#addplayer-button {
+#addplayer_button {
   vertical-align: middle;
   width: 3em;
   height: 3em;
@@ -9,13 +9,12 @@
   display: inline-block;
 }
 
-#addplayer-button-image {
-  width: 2em;
-  height: 2em;
+#addplayer_button_image {
+  width: 2.4em;
+  height: 2.4em;
   margin: auto;
   background-image: url("/images/plus.svg");
   background-repeat: no-repeat;
-  background-size: 100% 100%;
 }
 
 #confirm_button {
@@ -27,8 +26,8 @@
 }
 
 #confirm_button_image {
-  width: 2em;
-  height: 2em;
+  width: 2.4em;
+  height: 2.4em;
   margin: auto;
   background-image: url("/images/tick.svg");
   background-repeat: no-repeat;
