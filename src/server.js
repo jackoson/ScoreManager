@@ -91,7 +91,7 @@ function landing_page_redirect(req, res) {
     res.redirect("/templates/home/");
   } else {
     res.cookie("visited", "true", {expires: new Date(new Date().setFullYear(new Date().getFullYear() + 10))});
-    res.sendFile(path.resolve(__dirname, "public/landing.html"));
+    deliverXHTML_templates(req, res, () => {res.sendFile(path.resolve(__dirname, "public/landing.html"));})
   }
 }
 
