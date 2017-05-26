@@ -2,24 +2,21 @@
 
 var crypto = require('crypto');
 var openDatabase = require("./DatabaseConnector").openDatabase;
+var db = openDatabase();
 
 function getAllSessions(callback) {
-    var db = openDatabase();
-    db.get('select * from sessions', function(err, data) { db.close(); callback(err, data); });
+    db.get('select * from sessions', callback);
 }
 
 function getSessionByID(id, callback) {
-    var db = openDatabase();
-    db.get('select * from sessions where ID = $ID', {$ID: id}, function(err, data) { db.close(); callback(err, data); });
+    db.get('select * from sessions where ID = $ID', {$ID: id}, callback);
 }
 
 function updateSessionExpiration(id, callback) {
-    var db = openDatabase();
-    db.get('update sessions set created = $datetime where ID = $ID', {$ID: id, $datetime: new Date().getTime()}, function(err) { db.close(); callback(err); });
+    db.get('update sessions set created = $datetime where ID = $ID', {$ID: id, $datetime: new Date().getTime()}, callback);
 }
 
 function addSession(userID, callback) {
-    var db = openDatabase();
     var sessionID;
     tryInsert();
     function tryInsert() {
@@ -38,35 +35,29 @@ function addSession(userID, callback) {
         if(err != null) {
             tryInsert();
         } else {
-            db.close();
             callback(err, sessionID);
         }
     }
 }
 
 function addSessionUser(sessionid, userid, callback) {
-  var db = openDatabase();
-  db.get('update sessions set userID = $userid where ID = $sessionid', {$sessionid: sessionid, $userid: userid}, function(err) { db.close(); callback(err); });
+  db.get('update sessions set userID = $userid where ID = $sessionid', {$sessionid: sessionid, $userid: userid}, callback );
 }
 
 function removeSessionUser(sessionid, callback) {
-  var db = openDatabase();
-  db.get('update sessions set userID = null where ID = $sessionid', {$sessionid: sessionid}, function(err) { db.close(); callback(err); });
+  db.get('update sessions set userID = null where ID = $sessionid', {$sessionid: sessionid}, callback);
 }
 
 function deleteSession(id, callback) {
-    var db = openDatabase();
-    db.run('delete from sessions where ID = $ID', {$ID: id}, function(err) { db.close(); callback(err); });
+    db.run('delete from sessions where ID = $ID', {$ID: id}, callback);
 }
 
 function deleteAllSessions(callback) {
-    var db = openDatabase();
-    db.run('delete from sessions', function(err) { db.close(); callback(err); });
+    db.run('delete from sessions', callback);
 }
 
 function deleteOldSessions(time) {
-    var db = openDatabase();
-    db.run('delete from sessions where created <= $time', {$time: time}, function(err) { db.close(); });
+    db.run('delete from sessions where created <= $time', {$time: time});
 }
 
 module.exports = {

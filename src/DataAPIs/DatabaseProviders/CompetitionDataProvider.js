@@ -1,9 +1,9 @@
 "use strict"
 
 var openDatabase = require("./DatabaseConnector").openDatabase;
+var db = openDatabase();
 
 function getAllCompetitions(callback) {
-  var db = openDatabase();
   db.all('select competitions.ID, competitions.name from competitions', getCompetitions);
   function getCompetitions(err, competitions_basic) {
     if(err != null) { callback(err); return; }
@@ -38,7 +38,6 @@ function getAllCompetitions(callback) {
 }
 
 function getCompetitionByID(ID, callback){
-  var db = openDatabase();
   db.get('select ID, name from competitions where ID = $ID', {$ID: ID}, getCompetition);
   function getCompetition(err, competition_basic) {
     if(err != null) { callback(err); return; }
@@ -54,46 +53,29 @@ function getCompetitionByID(ID, callback){
 }
 
 function getCompetitionsByName(name, callback) {
-  var db = openDatabase();
-  db.all('SELECT * FROM competitions where name like \'%' + name + '%\'',
-    function(err, rows) { db.close(); callback(err, rows); }
-  );
+  db.all('SELECT * FROM competitions where name like \'%' + name + '%\'', callback);
 }
 
 function addCompetition(name, callback) {
-  var db = openDatabase();
-  db.run('insert into competitions (name) values ($name)', {$name: name}, function(err) {db.close(); callback(err, this.lastID);});
+  db.run('insert into competitions (name) values ($name)', {$name: name}, function(err) { callback(err, this.lastID);});
 }
 
 function addRubber(compId, callback) {
-  var db = openDatabase();
-  db.run('insert into rubbers (competitionID) values ($compId)', {$compId: compId}, function(err) {db.close(); callback(err, this.lastID);});
+  db.run('insert into rubbers (competitionID) values ($compId)', {$compId: compId}, function(err) {callback(err, this.lastID);});
 }
 
 function deleteCompetition(ID, callback) {
-  var db = openDatabase();
   db.run('delete from competitions where ID = $id', {$id: ID},
     function(err) {
-      db.run('delete from rubbers where competitionID = $id', {$id: ID},
-        function(err) {
-          db.close();
-          callback(err);
-        }
-      );
+      db.run('delete from rubbers where competitionID = $id', {$id: ID}, callback);
     }
   );
 }
 
 function deleteAllCompetitions(callback) {
-  var db = openDatabase();
   db.run('delete from competitions',
     function(err) {
-      db.run('delete from rubbers',
-        function(err) {
-          db.close();
-          callback(err);
-        }
-      );
+      db.run('delete from rubbers',callback);
     }
   );
 }

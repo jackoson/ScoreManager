@@ -1,12 +1,10 @@
 "use strict"
 
 var openDatabase = require("./DatabaseConnector").openDatabase;
+var db = openDatabase();
 
 function getAllPlayers(callback) {
-  var db = openDatabase();
-  db.all('SELECT * FROM players',
-    function(err, rows) { db.close(); callback(err, rows); }
-  );
+  db.all('SELECT * FROM players', callback);
 }
 
 var selectOpponentsSQLString = `select opponents.ID as ID, opponents.setsWon, teams.ID as teamID, teams.name as teamName
@@ -17,7 +15,6 @@ var selectOpponentsSQLString = `select opponents.ID as ID, opponents.setsWon, te
 var selectPlayersSQLString = 'select matchplayers.ID, players.ID, players.name from matchplayers JOIN players ON players.ID = matchplayers.playerID where matchplayers.opponentID = $ID';
 
 function getPlayerByID(ID, callback){
-  var db = openDatabase();
   db.get('SELECT players.ID, players.name, players.sex FROM players where ID = $value', {$value: ID}, getPlayer );
   function getPlayer(err, player_basic) {
     if(err != null) { callback(err); return; }
@@ -104,41 +101,28 @@ function getPlayerByID(ID, callback){
 }
 
 function getPlayersByName(name, callback) {
-  var db = openDatabase();
-  db.all('SELECT * FROM players where name like \'%' + name + '%\'',
-    function(err, rows) { db.close(); callback(err, rows); }
-  );
+  db.all('SELECT * FROM players where name like \'%' + name + '%\'',callback);
 }
 
 const female = "f";
 const male = "m";
 const other = "o";
 function getPlayersBySex(sex, callback) {
-  var db = openDatabase();
-  db.all('SELECT * FROM players where gender = $value', {$value: sex},
-    function(err, rows) { db.close(); callback(err, rows); }
-  );
+  db.all('SELECT * FROM players where gender = $value', {$value: sex},callback);
 }
 
 function addPlayer(name, sex, callback) {
-  var db = openDatabase();
   db.run('insert into players (name, sex) values ($name, $sex)', {$name: name, $sex: sex},
-    function(err) { db.close(); callback(err, this.lastID); }
+    function(err) { callback(err, this.lastID); }
   );
 }
 
 function deletePlayer(ID, callback) {
-  var db = openDatabase();
-  db.run('delete from players where ID = $id', {$id: ID},
-    function(err) { db.close(); callback(err); }
-  );
+  db.run('delete from players where ID = $id', {$id: ID},callback);
 }
 
 function deleteAllPlayers(callback) {
-  var db = openDatabase();
-  db.run('delete from players',
-    function(err) { db.close(); callback(err); }
-  );
+  db.run('delete from players',callback);
 }
 
 module.exports = {

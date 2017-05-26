@@ -2,7 +2,7 @@
 var teamAPI = require('./TeamDataProvider');
 
 var openDatabase = require("./DatabaseConnector").openDatabase;
-
+var db = openDatabase();
 var selectMatchesSQLString = `select matches.ID, datetime, type, rubbers.ID as rubberID, competitions.name as competitionName
                               from matches
                               LEFT JOIN rubbers ON rubbers.ID = matches.rubberID
@@ -20,7 +20,6 @@ var selectPlayersSQLString = `select matchplayers.ID, players.ID, players.name
                               where matchplayers.opponentID = $ID`;
 
 function getAllMatches(callback) {
-  var db = openDatabase();
   db.all(selectMatchesSQLString, getMatches);
   function getMatches(err, matches_basic) {
     if(err != null) { callback(err); return; }
@@ -73,7 +72,6 @@ function getAllMatches(callback) {
 }
 
 function getMatchByID(ID, callback){
-  var db = openDatabase();
   db.get(selectMatchesSQLString + ' where matches.ID = $ID', {$ID: ID}, getMatch);
   function getMatch(err, match_basic) {
     if(err != null) { callback(err); return; }
@@ -112,15 +110,13 @@ function getMatchByID(ID, callback){
 }
 
 function addMatch(rubber, type, datetime, opponents, callback) {
-  var db = openDatabase();
   db.run('insert into matches (type, datetime, rubberID) values ($type, $datetime, $rubber)', {$type: type, $datetime: datetime, $rubber: rubber},
     function(err){
-      if(err != null) {db.close(); callback(err); return;}
+      if(err != null) { callback(err); return;}
       var matchID = this.lastID;
       addNextOpponent(err);
       function addNextOpponent(err) {
         if(err != null || opponents.length == 0) {
-          db.close();
           callback(err, matchID);
           return;
         }
@@ -128,7 +124,7 @@ function addMatch(rubber, type, datetime, opponents, callback) {
           var opponent = opponents.pop();
           db.run('insert into opponents (matchID, setsWon) values ($matchID, $setsWon)', {$matchID: matchID, $setsWon: opponent.setsWon},
           function(err) {
-            if(err != null) { db.close(); callback(err); return;}
+            if(err != null) { callback(err); return;}
             var opponentID = this.lastID;
             if(opponent.teamID == null) {addNextPlayer(err);}
             else {
@@ -137,15 +133,12 @@ function addMatch(rubber, type, datetime, opponents, callback) {
                   db.run('insert into teamplays (opponentID, teamID) values ($opponentID, $teamID)', {$opponentID: opponentID, $teamID: opponent.teamID}, addNextPlayer);
                 },
                 () => {
-                  db.close();
                   callback("ERROR: Not all players are in the specified team");
-                  return;
                 }
               ));
             }
             function addNextPlayer(err) {
               if(err != null) {
-                db.close();
                 callback(err, matchID);
               }
               else if(opponent.players.length == 0) {
@@ -183,7 +176,6 @@ function AllPlayersAreInTeam(playerIDs, teamID, trueCallback, falseCallback) {
 }
 
 function deleteMatch(ID, callback) {
-  var db = openDatabase();
   db.run('delete from matches where ID = $id', {$id: ID});
   db.all('select ID from opponents where matchID = $id', {$id: ID}, a);
   function a(err, opponents) {
@@ -201,11 +193,10 @@ function deleteMatch(ID, callback) {
 }
 
 function deleteAllMatches(callback) {
-  var db = openDatabase();
   db.run('delete from matches');
   db.run('delete from opponents');
   db.run('delete from teamplays');
-  db.run('delete from matchplayers', function(err) { db.close(); callback(err); });
+  db.run('delete from matchplayers', callback);
 }
 
 module.exports = {

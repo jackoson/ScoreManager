@@ -2,20 +2,18 @@
 
 var crypto = require('crypto');
 var openDatabase = require("./DatabaseConnector").openDatabase;
+var db = openDatabase();
 
 function getAllUsers(callback) {
-    var db = openDatabase();
-    db.get('select * from users', function(err, data) { db.close(); callback(err, data); });
+    db.get('select * from users', callback);
 }
 
 function getUserByID(id, callback) {
-    var db = openDatabase();
-    db.get('select * from users where ID = $ID', {$ID: id}, function(err, data) { db.close(); callback(err, data); });
+    db.get('select * from users where ID = $ID', {$ID: id}, callback);
 }
 
 function getUserByUsername(username, callback) {
-    var db = openDatabase();
-    db.get('select * from users where username = $username', {$username: username}, function(err, data) { db.close(); callback(err, data); });
+    db.get('select * from users where username = $username', {$username: username}, callback);
 }
 
 function AuthenticateUser(username, password, callback) {
@@ -37,7 +35,6 @@ function AuthenticateUser(username, password, callback) {
 }
 
 function addUser(user, callback) {
-    var db = openDatabase();
     crypto.randomBytes(32, done);
     function done(err, buf) {
       if(err != null) throw Exception("No randomness");
@@ -48,20 +45,16 @@ function addUser(user, callback) {
       var hash = hashfunction.digest('hex');
       db.run(
           'insert into users (username, passwordHash, passwordSalt) values ($username, $hash, $salt)',
-          {$username: user.username, $hash: hash, $salt: salt},
-          function(err) { db.close(); callback(err); }
-      );
+          {$username: user.username, $hash: hash, $salt: salt},callback);
     }
 }
 
 function deleteUser(id, callback) {
-    var db = openDatabase();
-    db.run('delete from users where ID = $ID', {$ID: id}, function(err) { db.close(); callback(err); });
+    db.run('delete from users where ID = $ID', {$ID: id}, callback);
 }
 
 function deleteAllUsers(callback) {
-    var db = openDatabase();
-    db.run('delete from users', function(err) { db.close(); callback(err); });
+    db.run('delete from users', callback);
 }
 
 module.exports = {

@@ -1,9 +1,9 @@
 "use strict"
 
 var openDatabase = require("./DatabaseConnector").openDatabase;
+var db = openDatabase();
 
 function getAllTeams(callback) {
-  var db = openDatabase();
   db.all('select teams.ID, teams.name from teams', getTeams);
   function getTeams(err, teams_basic) {
     if(err != null) { callback(err); return; }
@@ -38,7 +38,6 @@ function getAllTeams(callback) {
 }
 
 function getTeamByID(ID, callback){
-  var db = openDatabase();
   db.get('select teams.ID, teams.name from teams where ID = $ID', {$ID: ID}, getTeam);
   function getTeam(err, team_basic) {
     if(err != null) { callback(err); return; }
@@ -54,64 +53,44 @@ function getTeamByID(ID, callback){
 }
 
 function getTeamsByName(name, callback) {
-  var db = openDatabase();
-  db.all('SELECT * FROM teams where name like \'%' + name + '%\'',
-    function(err, rows) { db.close(); callback(err, rows); }
-  );
+  db.all('SELECT * FROM teams where name like \'%' + name + '%\'',callback);
 }
 
 function addTeam(name, callback) {
-  var db = openDatabase();
-  db.run('insert into teams (name) values ($name)', {$name: name}, function(err) {db.close(); callback(err, this.lastID);});
+  db.run('insert into teams (name) values ($name)', {$name: name}, function(err) {callback(err, this.lastID);});
 }
 
 function addTeamPlayer(playerID, teamID, callback) {
-  var db = openDatabase();
-  db.run('insert into teamplayers (playerID, teamID) values ($playerID, $teamID)', {$playerID: playerID, $teamID: teamID}, function(err) {db.close(); callback(err, this.lastID);});
+  db.run('insert into teamplayers (playerID, teamID) values ($playerID, $teamID)', {$playerID: playerID, $teamID: teamID}, function(err) {callback(err, this.lastID);});
 }
 
 function deleteTeamPlayerByID(ID, callback) {
-  var db = openDatabase();
-  db.run('delete from teamplayers WHERE ID = $ID', {$ID: ID}, function(err) {db.close(); callback(err, this.lastID);});
+  db.run('delete from teamplayers WHERE ID = $ID', {$ID: ID}, function(err) {callback(err, this.lastID);});
 }
 
 function getTeamPlayerByID(ID, callback) {
-  var db = openDatabase();
   db.get(`select teamplayers.ID as teamplayerID, players.ID as playerID, players.name as playerName, players.sex as playerSex, teams.ID as teamID, teams.name as teamName from teamplayers
           JOIN players ON players.ID = teamplayers.playerID
           JOIN teams ON teams.ID = teamplayers.teamID
-          where teamplayers.ID = $ID`, {$ID: ID}, function(err, rows) { db.close(); if (err != null) {callback(err);} else if(rows != undefined){callback(err, rows);} else {callback(err, {}) } });
+          where teamplayers.ID = $ID`, {$ID: ID}, function(err, rows) { if (err != null) {callback(err);} else if(rows != undefined){callback(err, rows);} else {callback(err, {}) } });
 }
 
 function deleteTeamPlayerByID(ID, callback) {
-  var db = openDatabase();
   db.run('delete from teamplayers where ID = $id', {$id: ID}, callback);
 }
 
 function deleteTeam(ID, callback) {
-  var db = openDatabase();
   db.run('delete from teams where ID = $id', {$id: ID},
     function(err) {
-      db.run('delete from teamplayers where teamID = $id', {$id: ID},
-        function(err) {
-          db.close();
-          callback(err);
-        }
-      );
+      db.run('delete from teamplayers where teamID = $id', {$id: ID},callback);
     }
   );
 }
 
 function deleteAllTeams(callback) {
-  var db = openDatabase();
   db.run('delete from teams',
     function(err) {
-      db.run('delete from teamplayers',
-        function(err) {
-          db.close();
-          callback(err);
-        }
-      );
+      db.run('delete from teamplayers',callback);
     }
   );
 }
