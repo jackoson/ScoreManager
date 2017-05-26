@@ -16,7 +16,7 @@ li:hover {
   background-color: #0000bb;
 }
 
-img {
+.icon {
   display: block;
   height: 4em;
   float: right;
