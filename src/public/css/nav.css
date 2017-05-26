@@ -59,18 +59,19 @@ nav#navBar a {
   text-decoration: none;
 }
 
-nav#navBar div.navItem {
+.navItem {
   color: white;
   display: inline-block;
   padding: 1em;
 }
 
-nav#navBar div.navLink:hover {
+.hover-highlight:hover {
   background-color: #469396;
 }
 
-nav#navBar div#navBarTitle{
+#navBarTitle{
   font-weight: bold;
+  color: white;
 }
 
 @media (min-width: 60em) {
@@ -86,7 +87,22 @@ nav#navBar div#navBarTitle{
 }
 
 @media (max-width: 30em) {
-  nav#navBar div.navItem {
+  .navItem {
     display: block;
+  }
+  .hide-item {
+    display: none;
+  }
+}
+
+.menu {
+  vertical-align: middle;
+  margin: 0.5em;
+  padding-bottom: 0.2em;
+}
+
+@media (min-width: 30em) {
+  .menu {
+    display: none;
   }
 }

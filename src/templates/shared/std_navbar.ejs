@@ -1,11 +1,14 @@
 <nav id="navBar" >
-  <a href="/landing.html" ><div class="navItem" id="navBarTitle" >UBSTUSS</div></a>
-  <a href="/templates/home" ><div class="navItem navLink" >Home</div></a>
-  <a href="/templates/players" ><div class="navItem navLink" >Players</div></a>
-  <a href="/templates/matches" ><div class="navItem navLink" >Matches</div></a>
-  <a href="/templates/teams" ><div class="navItem navLink" >Teams</div></a>
-  <a href="/templates/competitions" ><div class="navItem navLink" >Competitions</div></a>
-  <div id="signin" class="navItem signin">
+  <div class="navItem navBarTitle">
+    <img src="/images/menu.svg" class="menu" id="menu_button"/>
+    <a href="/landing.html" id="navBarTitle">UBSTUSS</a>
+  </div>
+  <a href="/templates/home" ><div class="navItem hideable-item hide-item hover-highlight" >Home</div></a>
+  <a href="/templates/players" ><div class="navItem hideable-item hide-item hover-highlight" >Players</div></a>
+  <a href="/templates/matches" ><div class="navItem hideable-item hide-item hover-highlight" >Matches</div></a>
+  <a href="/templates/teams" ><div class="navItem hideable-item hide-item hover-highlight" >Teams</div></a>
+  <a href="/templates/competitions" ><div class="navItem hideable-item hide-item hover-highlight" >Competitions</div></a>
+  <div id="signin" class="navItem signin hideable-item hide-item">
     <% if (login.logged_in) { %>
       Logged in as <em><%= login.user.username %></em>
       <input type="hidden" id="logged_in" value="true" />

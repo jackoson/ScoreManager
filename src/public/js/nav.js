@@ -4,12 +4,19 @@ window.addEventListener('load', initialise);
 
 function initialise() {
   var modal_showing = false;
-  document.addEventListener('click', handler);
+
+  document.addEventListener('click', handle_login_modal);
 
   document.getElementById("login-form").onsubmit = postForm;
   document.getElementById("logout_button").addEventListener('click', logout);
 
-  function handler(event){
+  document.getElementById("menu_button").addEventListener('click', handle_menu);
+
+  function handle_menu(event) {
+    Array.from(document.getElementsByClassName("hideable-item")).forEach((i)=>{i.classList.toggle("hide-item")})
+  }
+
+  function handle_login_modal(event){
     if( modal_showing == true && !event.target.className.includes('model-item') ) {
       modal_showing = false;
       document.getElementById("login_modal").style['display'] = "none";
