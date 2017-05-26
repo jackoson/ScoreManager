@@ -19,7 +19,7 @@ function getUserByUsername(username, callback) {
 function AuthenticateUser(username, password, callback) {
   getUserByUsername(username, getUsername);
   function getUsername(err, data) {
-    if(err != null) {
+    if(err != null || data == null) {
       callback(false);
     } else {
       var hashfunction = crypto.createHash('sha256');
