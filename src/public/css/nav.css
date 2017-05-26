@@ -1,4 +1,11 @@
 
+#loading_ball{
+  visibility: hidden;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin { 100% {transform:rotate(360deg); } }
+
 div.modal-background {
   background-color: rgba(0, 0, 0, 0.8);
   position: fixed;

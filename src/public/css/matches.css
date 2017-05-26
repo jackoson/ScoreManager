@@ -4,6 +4,13 @@
   visibility: hidden;s
 }
 
+#loading_ball{
+  visibility: hidden;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin { 100% {transform:rotate(360deg); } }
+
 .matchRubber-input {
   visibility: hidden;
 }

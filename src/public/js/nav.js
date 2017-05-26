@@ -34,6 +34,7 @@ function initialise() {
 }
 
 function postForm() {
+  document.getElementById("loading_ball").style.visibility = "visible";
   document.getElementById("error-message").innerHTML = "";
   var req = new XMLHttpRequest();
   req.onreadystatechange = receive;
@@ -41,6 +42,7 @@ function postForm() {
     if (this.readyState != XMLHttpRequest.DONE)
       return;
     document.getElementById("error-message").innerHTML = this.responseText;
+    document.getElementById("loading_ball").style.visibility = "hidden";
     if(this.status == 200) {
       location.reload();
     }

@@ -51,6 +51,7 @@ function addMatch() {
   if(!validateInputs())
     return;
   document.getElementById("tick_button").removeEventListener('click', addMatch);
+  document.getElementById("loading_ball").style.visibility = "visible";
   var match = {};
   match.datetime = document.getElementById("date_input").value;
   match.type = document.getElementById("type_input").value;
@@ -81,6 +82,7 @@ function addMatch() {
     var container = document.getElementById("matches");
     container.innerHTML = ejs.render(template,{match: match}) + container.innerHTML;
     hideAddScreen();
+    document.getElementById("loading_ball").style.visibility = "hidden";
     document.getElementById("tick_button").addEventListener('click', addMatch);
   }
 }
