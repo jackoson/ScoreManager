@@ -43,6 +43,7 @@ function click_cross() {
       document.getElementById("confirm_button_image").className = 'fade-in-animation';
       document.getElementById("name_input").className = 'show-elements fade-in-animation';
       document.getElementById("sex_select").className = 'show-elements fade-in-animation';
+      document.getElementById("name_input").focus();
     }, 1000);
     cross_pos = "right";
   } else if(cross_pos == "right") {
